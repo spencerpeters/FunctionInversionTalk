@@ -41,6 +41,11 @@
 \renewcommand{\P}{\mathcal{P}}
 \newcommand{\eps}{\epsilon}
 
+\newcounter{slidecounter}[framenumber]
+% \newcommand{\step}{
+%   \stepcounter{slidecounter}
+%   \value{slidecounter}
+% }
 % % === CUSTOM TIKZ ===
 
 % \newcommand{\cycle}{
@@ -182,7 +187,41 @@
     % \node[anchor=north] (C) at (B.south) {};
     % \node[below=0.6cm] (D) at (C.south) {};
     % \path (C) -- node[auto=false]{\vdots} (D);
-    }
+  }
+
+     \newcommand{\chainwithoutf}[2]{
+% LATER animate
+     \node[roundnode] (#2A) at (#1, 0) {};
+     \node[roundnode] (#2B) at ({#1 + 1}, 0) {};
+     \node[roundnode] (#2C) at ({#1 + 2}, 0) {};
+     \node[roundnode] (#2D) at ({#1 + 3}, 0) {};
+
+     \draw[-Latex] (#2A) -- (#2B);
+     \draw[-Latex] (#2B) -- (#2C);
+     \draw[-Latex] (#2C) -- (#2D);
+
+   }
+
+   \newcommand{\chain}[2]{
+     \chainwithoutf{#1}{#2}
+     \draw[-Latex] (#2C) --node[midway, above]{$f$} (#2D);
+     \node[roundnode] (#2B') at ({#1 + 1}, 0.5) {};
+     \draw[-Latex, dashed] (#2B') -- (#2C);
+   }
+
+   \newcommand{\chainwithendpoints}[2]{
+     \chain{#1}{#2}
+     \node[roundnode, draw=orange!60, fill=orange!5] at (#2A) {};
+     \node[roundnode, draw=orange!60, fill=orange!5] at (#2D) {};
+     \draw[-Latex, orange] (#2D) .. controls ($0.5*(#2A) + 0.5*(#2D) + (0, -0.5)$) .. (#2A);
+   }
+
+   \newcommand{\chainwithendpointswithoutf}[2]{
+     \chainwithoutf{#1}{#2}
+     \node[roundnode, draw=orange!60, fill=orange!5] at (#2A) {};
+     \node[roundnode, draw=orange!60, fill=orange!5] at (#2D) {};
+     % \draw[-Latex, orange] (#2D) .. controls ($0.5*(#2A) + 0.5*(#2D) + (0, -0.5)$) .. (#2A);
+   }
 
 % \newcommand{\roundnode}{roundnode/.style={circle, draw=green!60, fill=green!5, very thick, minimum size=5mm}}
 
@@ -207,6 +246,15 @@
 % \renewcommand{\pause}{}
 % \renewcommand{\mypause}{}
 % \renewcommand{\only}{}
+
+% \begin{frame}
+%   \frametitle{test}
+%   Test
+%     \stepcounter{slidecounter}
+%     \only< \value{slidecounter}>{foo};
+%      \stepcounter{slidecounter}
+%   \only< \value{slidecounter} >{bar};
+% \end{frame}
 
 
 \begin{frame}
@@ -235,77 +283,46 @@
   \end{tikzpicture}
 \end{frame}
 
-\begin{frame}
-  \frametitle{Function Inversion}
-  \begin{itemize}
-  \item Given a function $f: \{1, 2, \dots, N\} \to \{1, 2, \dots, N\}$ and a point $y$ in its image, find $x$ with $f(x) = y$.
-  \end{itemize}
-\end{frame}
+% \begin{frame}
+%   \frametitle{Function Inversion}
+%   \begin{itemize}
+%   \item Given a function\only<2->{, and a point $y$ in its range},
+%     \vspace{0.2em}
+%     % $f: \{1, 2, \dots, N\} \to \{1, 2, \dots, N\}$ and a point $y$ in its image, find $x$ with $f(x) = y$.
+%   \end{itemize}
+%   \begin{tikzpicture}
+%     \node (A) at (0, 0) {$\{1, 2, \dots, N\} =: [N]$};
+%     \node[anchor = west, rectangle, draw=black!80, fill=black!80, minimum width = 2.5cm, minimum height = 1cm] (B) at ($(A.east) + (1, 0)$) {\textcolor{white}{$f$}};
+%     \only<1>{ \node[anchor = west] (C) at ($(B.east) + (1, 0)$) {$[N]$}; }
+%     \only<2->{ \node[anchor = west] (C) at ($(B.east) + (1, 0)$) {$[N] \; \scalebox{1.3}{$\ni y$}$}; }
+%     \draw[-Latex] (B) -- (C);
+%     \draw[-Latex] (A) -- (B);
+%   \end{tikzpicture}
+% \end{frame}
 
 \begin{frame}
   \frametitle{Function Inversion}
-  \vspace{-0.45cm}
   \begin{itemize}
-  \item Given a function $f: \{1, 2, \dots, N\} \to \overbrace{\{1, 2, \dots, N\}}^{[N]}$ and a point $y$ in its image, find $x$ with $f(x) = y$.
-    % from a discrete set to itself (say, a cryptographic hash function), and a point $y$ in the range, how do I invert?
+  \item Given a function\only<2->{, and a point $y$ in its range,}\only<3->{ find $x$ with $f(x) = y$.}
+    \vspace{0.2em}
   \end{itemize}
-  \pause
-  \hspace{5em}
-  \scalebox{0.8}{
+  \begin{tikzpicture}
+    \only<.-2>{\node (A) at (0, 0) {$\{1, 2, \dots, N\} =: [N]$};}
+    \node[anchor = west, rectangle, draw=black!80, fill=black!80, minimum width = 2.5cm, minimum height = 1cm] (B) at ($(A.east) + (1, 0)$) {\textcolor{white}{$f$}};
+    \only<+>{ \node[anchor = west] (C) at ($(B.east) + (1, 0)$) {$[N]$}; }
+    \only<+->{ \node[anchor = west] (C) at ($(B.east) + (1, 0)$) {$\scalebox{1.3}{$y \in $} \; [N] $ }; }
+    \only<+->{ \node (A) at (0, 0) {$\{1, 2, \dots, N\} =: [N] \; \scalebox{1.3}{$\ni x$}$}; }
+    \draw[-Latex] (B) -- (C);
+    \draw[-Latex] (A) -- (B);
+  \end{tikzpicture}
+
+  \vspace{1em}
+  \only<+->{
+    \begin{center}
+    \scalebox{0.8}{
     \begin{tikzpicture}[roundnode/.style={circle, draw=green!60, fill=green!5, very thick, minimum size=3mm}]
-    % \points{2}
-
-    % \only<2->{
-    % \draw[-Latex] (1.east) -- node[midway, above] {$f$} (B.west);
-    % \draw[-Latex] (2.east) -- (C.west);
-    % \draw[-Latex] (3.east) -- (C.west);
-    % \draw[-Latex] (4.east) -- (A.west);
-    % }
-
-    % \only<3->{
-    % \node[roundnode, anchor=north, draw=red!60, fill=red!5] (C) at (B.south) {3};}
-    % \only<4->{
-    % \node[roundnode, anchor=north, draw=blue!60, fill=blue!5] (2) at (1.south) {2};}
-
-    % \only<9>{
-    %   \points{7}
-
-    % \draw[-Latex] (1.east) -- node[midway, above] {$f$} (B.west);
-    % \draw[-Latex] (2.east) -- (D.west);
-    % \draw[-Latex] (3.east) -- (C.west);
-    % \draw[-Latex] (4.east) -- (A.west);
-    %   }
-      % \newcommand{\mydraw}[2]{
-      %   \draw[-Latex] #1 .. controls ($0.5 * #1 + 0.5 * #2 + (1, 0)$) .. #2;
-      % }
-
-      % ===
-    %   \halfpoints{2}
-    %   \only<2->{
-    %         \draw[-Latex] (1.east) .. controls ($0.5*(1.east) + 0.5*(2.east) + (1, 0)$) .. node[midway, right] {$f$} (2.east);
-    %         % \draw[-Latex] (2.east) .. controls (3, -1.5) .. (3.east);
-    %         \draw[-Latex] (2.east) .. controls ($0.5*(2.east) + 0.5*(3.east) + (1, 0)$) .. (3.east);
-    %         % \draw[-Latex] (3.east) .. controls (3, -1.5) and (3, -2.5) .. (3.east);
-    %         \draw[-Latex] (3.west) .. controls ($0.5*(3.west) + 0.5*(3.west) + (-0.75, 0.5)$) and ($0.5*(3.west) + 0.5*(3.west) + (-0.75, -0.5)$) .. (3.west);
-    %         % \draw[-Latex] (4.east) .. controls (3, -2.5) .. (1.east);
-    %        \draw[-Latex] (4.west) .. controls ($0.5*(4.west) + 0.5*(1.west) + (-1, 0)$) ..  (1.west);
-
-    %      }
-
-    %      \only<3->{
-    % \node[roundnode, anchor=north, draw=red!60, fill=red!5] (3) at (2.south) {3};}
-    % \only<4->{
-    %   \node[roundnode, anchor=north, draw=blue!60, fill=blue!5] (2) at (1.south) {2};}
-
-    %    \only<9>{
-    %   \halfpoints{7}
-    % \draw[-Latex] (1.east) .. controls ($0.5*(1.east) + 0.5*(3.east) + (1, 0)$) .. node[midway, right] {$f$} (3.east);
-    % \draw[-Latex] (3.east) .. controls ($0.5*(3.east) + 0.5*(4.east) + (1, 0)$) .. (4.east);
-    % \draw[-Latex] (2.west) .. controls ($0.5*(2.west) + 0.5*(2.west) + (-0.75, 0.5)$) and ($0.5*(2.west) + 0.5*(2.west) + (-0.75, -0.5)$) .. (2.west);
-    % \draw[-Latex] (4.west) .. controls ($0.5*(4.west) + 0.5*(1.west) + (-1, 0)$) ..  (1.west);
-    % ===
             \halfpoints{2}
-      \only<2->{
+      \only<.->{
             \draw[-Latex] (1.east) .. controls ($0.5*(1.east) + 0.5*(2.east) + (1, 0)$) .. node[midway, right] {$f$} (2.east);
             % \draw[-Latex] (2.east) .. controls (3, -1.5) .. (3.east);
             \draw[-Latex] (2.east) .. controls ($0.5*(2.east) + 0.5*(3.east) + (1, 0)$) .. (3.east);
@@ -316,43 +333,28 @@
 
          }
 
-         \only<3->{
+         \only<+->{
     \node[roundnode, below=0.3cm, draw=red!60, fill=red!5] (3) at (2.south) {74};}
-    \only<4->{
+    \only<+->{
       \node[roundnode, anchor=north, draw=blue!60, fill=blue!5] (2) at (1.south) {2};}
 
-       \only<8>{
+       \only<.(2)->{
       \halfpoints{7}
-    \draw[-Latex] (1.east) .. controls ($0.5*(1.east) + 0.5*(3.east) + (1, 0)$) .. node[midway, right] {$f$} (3.east);
+    \draw[-Latex] (1.east) .. controls ($0.5*(1.east) + 0.5*(3.east) + (1, 0)$) .. node[midway, right] {permutation $f$} (3.east);
     \draw[-Latex] (3.east) .. controls ($0.5*(3.east) + 0.5*(4.east) + (1, 0)$) .. (4.east);
     \draw[-Latex] (2.west) .. controls ($0.5*(2.west) + 0.5*(2.west) + (-0.75, 0.5)$) and ($0.5*(2.west) + 0.5*(2.west) + (-0.75, -0.5)$) .. (2.west);
     \draw[-Latex] (4.west) .. controls ($0.5*(4.west) + 0.5*(1.west) + (-1, 0)$) ..  (1.west);
     }
 
-    \end{tikzpicture}}
-\only<5->{
+  \end{tikzpicture}
+}
+\end{center}
+}
+\only<+->{
   \begin{itemize}
-    \item We're interested in algorithms that invert any function, using only the ability to evaluate it.
-    % \item This is a basic problem with many applications.
-  % \only<6->{\item Codebreakers and mathematicians have been inverting specific functions for centuries.}
-    \only<6->{\item The study of this \emph{black-box} function inversion problem was initiated by Martin Hellman \raisebox{-0.5 \height}{\includegraphics[height=1cm]{assets/hellman.jpeg}} in 1980 \cite{Hellman80}.}
-    % \only<6->{\item Hellman's algorithm for permutations is beautiful and illustrative.}
-    \only<7->{\item The algorithm Hellman devised is beautiful, and for the special case of permutations, quite simple.}
-    % NOTE emphasize algorithm is beautiful
-    % NOTE algorithm will notivate model
-    % \pause
-  % \item Hellman gave ``time-space tradeoffs'' for inverting permutations and inverting a randomly chosen function.
-    % For example, f is a cryptographic hash function. We're trying to recover a password from its stored hash.
-    % We're trying to forge a document with a given checksum/fingerprint ("hash").
+    \item The study of this \emph{black-box} function inversion problem was initiated by Martin Hellman \inlineauthor{hellman} in 1980 \cite{Hellman80}.
   \end{itemize}}
 \end{frame}
-
-% \begin{frame}
-%   \frametitle{Function Inversion}
-%   \begin{itemize}
-%   %It's better to see the algorithm before I tell you what that means.
-%   \end{itemize}
-% \end{frame}
 
 
   \begin{frame}
@@ -360,9 +362,8 @@
     \begin{itemize}
     \item If $f$ is a permutation, its \emph{graph} is a disjoint union of cycles.
     \end{itemize}
-    \pause
-      \vspace{1ex}
-
+    \vspace{1ex}
+    \onslide<+->
     % LATER animate these!
     \scalebox{0.8}{
     \begin{tikzpicture}[roundnode/.style={circle, draw=green!60, fill=green!5, very thick, minimum size=5mm}]
@@ -379,67 +380,50 @@
        \renewcommand{\x}{7}
        \renewcommand{\y}{-1}
        \plaincycle
-       % \node [right=-0.03cm of 0.west] {$y \in [N]$};
-       \node<3->[roundnode, draw=purple!60, fill=purple!5] at (0) {};
-       % \node<3-> [right=0.05cm of 0.west] {$y \; \in [N] := \{1, 2, \dots, N\}$};
-       \node<3-> [right=0.05cm of 0.west] {$y \; \in [N]$};
-       % \pause
-       % \node[roundnode, draw=purple!60, fill=purple!5] at (0) {};
-       % \node[right=0.05cm of 0.west] {$y \; \in [N] := \{1, 2, \dots, N\}$};
-       \node<6->[roundnode, draw=blue!60, fill=blue!5] at (1) {};
-       \node<7->[roundnode] at (1) {};
-       \node<7->[roundnode, draw=blue!60, fill=blue!5] at (2) {};
-              \node<8->[roundnode] at (2) {};
-       \node<8->[roundnode, draw=blue!60, fill=blue!5] at (3) {};
-              \node<9->[roundnode] at (3) {};
-              \node<9->[roundnode, draw=blue!60, fill=blue!5] at (4) {};
-                     \node<10->[roundnode] at (4) {};
-
-                     \node<10->[roundnode, draw=blue!60, fill=blue!5] at (5) {};
-                            \node<11->[roundnode] at (5) {};
-
-                            \node<11->[roundnode, draw=blue!60, fill=blue!5] at (0) {};
-                            \node<11-> [right=0.05cm of 0.west] {$y \; \in [N]$};
+       \node<+->[roundnode, draw=purple!60, fill=purple!5] at (0) {};
+       \node<.-> [right=0.05cm of 0.west] {$y \; \in [N]$};
+       \node<+->[roundnode, draw=blue!60, fill=blue!5] at (1) {};
+       \node<+->[roundnode] at (1) {};
+       \node<.->[roundnode, draw=blue!60, fill=blue!5] at (2) {};
+       \node<+->[roundnode] at (2) {};
+       \node<.->[roundnode, draw=blue!60, fill=blue!5] at (3) {};
+       \node<+->[roundnode] at (3) {};
+       \node<.->[roundnode, draw=blue!60, fill=blue!5] at (4) {};
+       \node<+->[roundnode] at (4) {};
+       \node<.->[roundnode, draw=blue!60, fill=blue!5] at (5) {};
+       \node<+->[roundnode] at (5) {};
+       \node<.->[roundnode, draw=blue!60, fill=blue!5] at (0) {};
+       \node<.-> [right=0.05cm of 0.west] {$y \; \in [N]$};
 
      \end{tikzpicture}}
-   \pause
-   \pause
+   % \pause
+   % \pause
 
-   \begin{itemize}
-   \item Starting point: Hope $y$ is on a small cycle.
-     \pause
-   \item Compute $f(y)$, $f(f(y))$, and so on until you reach $y$ again.
-     \pause
-     \only<12>{\item Of course, $y$ might not be on a small cycle...}
-     \end{itemize}
+   % \begin{itemize}
+   % \item Starting point: Hope $y$ is on a small cycle.
+   %   \pause
+   % \item Compute $f(y)$, $f(f(y))$, and so on until you reach $y$ again.
+   %   \pause
+   %   \only<12>{\item Of course, $y$ might not be on a small cycle...}
+   %   \end{itemize}
    \end{frame}
 
      \begin{frame}
     \frametitle{Hellman's algorithm}
     \begin{itemize}
-    \item What if $y$ is on a large cycle?
+    \item<+-> What if $y$ is on a large cycle?
       \end{itemize}
     \vspace{1ex}
 
+    \only<+->{
     \scalebox{0.8}{
       \begin{tikzpicture}[roundnode/.style={circle, draw=green!60, fill=green!5, very thick, minimum size=5mm}]
-       % \newcommand{\spacing}{3}
-       % \newcommand{\n}{11}
-       % \newcommand{\scale}{2}
-       % \newcommand{\x}{1}
-       % \newcommand{\y}{-1}
-       % \only<2, 3>{\plaincycle}
-       % \only<4->{\cycle}
-       % \node<3, 5->[roundnode, draw=purple!60, fill=purple!5] at (0) {};
-       % \node<3, 5-> [right=0.05cm of 0.west] {$y \; \in [N]$};
-       % \only<7-> \draw[-Latex, color=orange] (1) -- (10);
-
        \newcommand{\spacing}{3}
        \newcommand{\n}{5}
        \newcommand{\scale}{1}
        \newcommand{\x}{7}
        \newcommand{\y}{-1}
-       \only<2, 3>{\plaincycle}
+       \plaincycle
        \only<4->{\cycle}
 
        \renewcommand{\spacing}{3}
@@ -447,31 +431,33 @@
        \renewcommand{\scale}{2}
        \renewcommand{\x}{1}
        \renewcommand{\y}{-1}
-       \only<2, 3>{\plaincycle}
+       \plaincycle
        \only<4->{\cycle}
-       \node<3, 5->[roundnode, draw=purple!60, fill=purple!5] at (0) {};
-       \node<3, 5-> [right=0.05cm of 0.west] {$y \; \in [N]$};
+       \node<2, 5->[roundnode, draw=purple!60, fill=purple!5] at (0) {};
+       \node<2, 5-> [right=0.05cm of 0.west] {$y \; \in [N]$};
 
        \only<6->{\node[roundnode, draw=blue!60, fill=orange!5] at (1) {};}
-       \only<8-> \draw[-Latex, color=orange] (1) -- (10);
-       \only<9->{\node[roundnode, draw=orange!60, fill=orange!5] at (1) {};}
-       \only<9->{\node[roundnode, draw=blue!60, fill=orange!5] at (10) {};}
-       \only<10->{\node[roundnode, draw=orange!60, fill=orange!5] at (10) {};}
-       \only<10->{\node[roundnode, draw=blue!60, fill=blue!5] at (11) {};}
-       \only<11->{\node[roundnode] at (11) {};}
-       \only<11->{\node[roundnode, draw=blue!60, fill=blue!5] at (0) {};}
-       \node<11-> [right=0.05cm of 0.west] {$y \; \in [N]$};
+       \only<7-> \draw[-Latex, color=orange] (1) -- (10);
+       \only<8->{\node[roundnode, draw=orange!60, fill=orange!5] at (1) {};}
+       \only<8->{\node[roundnode, draw=blue!60, fill=orange!5] at (10) {};}
+       \only<9->{\node[roundnode, draw=orange!60, fill=orange!5] at (10) {};}
+       \only<9->{\node[roundnode, draw=blue!60, fill=blue!5] at (11) {};}
+       \only<10->{\node[roundnode] at (11) {};}
+       \only<10->{\node[roundnode, draw=blue!60, fill=blue!5] at (0) {};}
+       \node<10-> [right=0.05cm of 0.west] {$y \; \in [N]$};
 
 
        % \node [right=-0.03cm of 0.west] {$y \in [N]$};
-     \end{tikzpicture}}
+     \end{tikzpicture}
+   }
+   }
 
    \only<4, 5, 6->{
    \begin{itemize}
    \item In a preprocessing step, store points uniformly spaced around each cycle.
-     \only<7->{
-     \item If you hit a stored point, jump to the previous one!
-     }
+     % \only<7->{
+     % \item If you hit a stored point, jump to the previous one!
+     % }
    \end{itemize}
    }
  \end{frame}
@@ -492,7 +478,7 @@
        \newcommand{\scale}{2}
        \newcommand{\x}{1}
        \newcommand{\y}{-1}
-=      \cycle
+       \cycle
        \node[roundnode, draw=purple!60, fill=purple!5] at (0) {};
        \node[right=0.05cm of 0.west] {$y \; \in [N]$};
        \draw[-Latex, color=orange] (1) -- (10);
@@ -541,7 +527,7 @@
      \pause
      % takes $\sigma$ and $y \in f([N])$ as input and returns $x \gets \A^f(\sigma, y)$. It only evaluates $f$ only $T$ times.
    % \item Need $S = O((N / T) \log N).$
-\item Need $S = O((N \log N) / T).$
+\item Hellman's algorithm uses $S = O((N \log N) / T).$
      % \pause
    % \item The online algorithm evaluates $f$ only $T$ times.
      % \item Given a permutation $f$, if we store roughly $N / T$ elements depending on $f$, we can invert any $y \in [N]$ using at most $T$ evaluations of $f$.
@@ -556,24 +542,33 @@
    %   \mypause
      % We call this a time-space tradeoff since $T$ is a lower bound on the time needed to invert $f$, and $S$ is a lower bound on the space needed. The values S and T are clean abstractions of the actual space adn time requirements of the inversion algorithm.
      % \item Notice that Hellman's algorithm only requires the ability to evaluate $f$ (\emph{black-box} access).
-   % \item Only requires \emph{black-box} access to $f$.
-   \end{itemize}
- \end{frame}
-
- \begin{frame}
-   \frametitle{Model}
-   \begin{itemize}
-   \item Formally, for all $f: [N] \to [N]$ and $y \in f([N])$, the algorithms $(\P, \A)$ should satisfy
+     % \item Only requires \emph{black-box} access to $f$.
+  \pause
+\item More generally, \textbf{the goal} is to design a preprocessing algorithm $(\P, \A)$ such that for all $f$ and all $y \in f([N])$,
      % \pause $\forall f: [N] \to [N], \forall y \in f([N])$,
   % \[\Pr_{r_1, r_2 \sim \{0, 1\}^\ell}[\alpha \gets \P(f, r_1); p' \gets \A^f(\alpha, y, r_2); f(p') = y] \geq 9/10.\]
      \[\Pr[\alpha \gets \P(f); x \gets \A^f(\alpha, y); f(x) = y] \geq 9/10.\]
      \mypause
-   \item $\P$ and $\A$ have unbounded computational power,
+   \item In this model, $\P$ and $\A$ have \textbf{unbounded} computational power,
      \pause
-   \item But,  $\alpha$ has bitlength at most $S$, and $\A$ can make at most $T$ evaluations of $f$.
- \end{itemize}
- % gNOTE say something here about the discrepancy between S, T and space, time?
+   \item But, $\alpha$ has bitlength at most $S$, and $\A$ can make at most $T$ evaluations of $f$.
+   \end{itemize}
  \end{frame}
+
+ % \begin{frame}
+ %   \frametitle{Model}
+ %   \begin{itemize}
+ %   \item Formally, for all $f: [N] \to [N]$ and $y \in f([N])$, the algorithms $(\P, \A)$ should satisfy
+ %     % \pause $\forall f: [N] \to [N], \forall y \in f([N])$,
+ %  % \[\Pr_{r_1, r_2 \sim \{0, 1\}^\ell}[\alpha \gets \P(f, r_1); p' \gets \A^f(\alpha, y, r_2); f(p') = y] \geq 9/10.\]
+ %     \[\Pr[\alpha \gets \P(f); x \gets \A^f(\alpha, y); f(x) = y] \geq 9/10.\]
+ %     \mypause
+ %   \item $\P$ and $\A$ have unbounded computational power,
+ %     \pause
+ %   \item But,  $\alpha$ has bitlength at most $S$, and $\A$ can make at most $T$ evaluations of $f$.
+ % \end{itemize}
+ % % gNOTE say something here about the discrepancy between S, T and space, time?
+ % \end{frame}
 
  \begin{frame}
    \frametitle{Applications}
@@ -592,9 +587,9 @@
      % \item Other scenarios:
    Scenarios
    \begin{itemize}
-   \item The NSA wants to break (invert) a widely used cryptographic hash function
+   \item The NSA wants to break a widely used cryptographic function, such as AES-128
      \pause
-   \item Hackers want to recover passwords from a stolen database of password hashes
+   \item Hackers want to recover passwords from a stolen database of password hashes (Rainbow Tables)
      \pause
    \item Theoretical computer scientists want better algorithms for 3-SUM \cite{GGH+DataStructuresMeet2020}, \inlineauthor{sasha} \inlineauthor{siyao} \inlineauthor{thibaut} \inlineauthor{sunoo} \inlineauthor{vinod}, multiparty pointer jumping \cite{CorriganGibbs19}, \inlineauthor{cg} \inlineauthor{kogan} systematic substring search \cite{CorriganGibbs19}, ...
      \end{itemize}
@@ -610,26 +605,7 @@
 %    % \item Hellman' salgorithm extends to random and worst-case functions \cite{Hellman80} \inlineauthor{hellman.jpeg} \cite{FiatNaor91} \inlineauthor{fiat} \inlineauthor{naor}
 %    % \end{itemize}
 %    % \pause
-     \newcommand{\chain}[1]{
-% LATER animate
-     \node[roundnode] (A) at (#1, 0) {};
-     \node[roundnode] (B) at ({#1 + 1}, 0) {};
-     \node[roundnode] (C) at ({#1 + 2}, 0) {};
-     \node[roundnode] (D) at ({#1 + 3}, 0) {};
-     \node[roundnode] (B') at ({#1 + 1}, 0.5) {};
 
-     \draw[-Latex] (A) -- (B);
-     \draw[-Latex] (B) -- (C);
-     \draw[-Latex] (B') -- (C);
-     \draw[-Latex] (C) --node[midway, above]{$f$} (D);
-   }
-
-   \newcommand{\chainwithendpoints}[1]{
-     \chain{#1}
-     \node[roundnode, draw=orange!60, fill=orange!5] at (A) {};
-     \node[roundnode, draw=orange!60, fill=orange!5] at (D) {};
-     \draw[-Latex, orange] (D) .. controls ($0.5*(A) + 0.5*(D) + (0, -0.5)$) .. (A);
-   }
 
    \begin{itemize}
    \item Preprocessing stores the endpoints of disjoint paths.
@@ -639,36 +615,52 @@
 
    \begin{tikzpicture}[roundnode/.style={circle, draw=green!60, fill=green!5, very thick, minimum size=3mm}]
 
-   \chain{0}
-   \chain{4}
+   \chain{0}{a}
+   \chain{4}{b}
+   \draw[-Latex, dashed] (aD) .. controls ($0.5*(aD) + 0.5*(bB) + (0, -0.5)$) .. (bB) {};
+   \draw[-Latex, dashed] (0, -0.5) -- (aB);
+   \draw[-Latex, dashed] (3, 0.5) -- (bA);
+   \draw[-Latex, dashed] (bD) -- (8, 0);
+
+
+
 
    % \pause
 
    % \chainwithendpoints{0}
    % \chainwithendpoints{4}
 
-   \only<2->{\chainwithendpoints{0}}
-   \only<2->{\chainwithendpoints{4}}
+   \only<3->{\chainwithendpoints{0}{a}}
+   \only<4->{
+   \node[roundnode, draw=blue!60, fill=orange!5] at (aB) {};
+   \node[roundnode, draw=blue!60, fill=orange!5] at (aC) {};
+   }
+   \only<3->{\chainwithendpoints{4}{b}}
+   \only<4->{
+   \node[roundnode, draw=blue!60, fill=orange!5] at (bB) {};
+   \node[roundnode, draw=blue!60, fill=orange!5] at (bC) {};
+   }
  \end{tikzpicture}
 
  % \vspace{0.5cm}
- % \pause
+ \pause
+ \pause
  \pause
 
  \begin{itemize}
- \item No longer possible to cover the entire range, but:
+ \item No longer possible to cover the entire range.
    % it's not possible to cover the entire range with disjoint paths.
    \pause
- \item For $f$ \emph{random}, can cover a small fraction with disjoint paths, then compose with a ``random'' function and repeat. \inlineauthor{hellman}
+ \item But, one can cover a small fraction with disjoint paths, then compose with a ``random'' function and repeat. \inlineauthor{hellman}
    % $T \lessim N^2 / S^2$.
    \pause
- % \item For random functions, Hellman showed (heuristically) this can be made to work.
+ \item For \emph{random} functions, Hellman showed (heuristically) this can be made to work.
  % \pause
  % \item But \emph{arbitrary} functions $f$ may have points with very many inverses (``junction points''), which cause paths to overlap very quickly.
- \item For $f$ \emph{arbitrary}, the same idea runs into trouble. There may be points with many inverses, which cause paths to overlap.
-   \pause
- \item We'll see how Amos Fiat \inlineauthor{fiat} and Moni Naor \inlineauthor{naor} handle this shortly...
-   \pause
+ % \item For $f$ \emph{arbitrary}, the same idea runs into trouble. There may be points with many inverses, which cause paths to overlap.
+ %   \pause
+ % \item We'll see how Amos Fiat \inlineauthor{fiat} and Moni Naor \inlineauthor{naor} handle this shortly...
+ %   \pause
  % \item But \emph{arbitrary} functions $f$ may have points with very many inverses (``junction points''), which cause paths to overlap very quickly.
     %   \pause
     % \item Fiat and Naor deal with this by storing $\alpha = (\alpha', L)$, where $L$ contains junction points along with their inverses. % NOTE: say "the list L"
@@ -676,7 +668,53 @@
     % \item Intuitively, $\alpha'$ is the data structure for a \emph{restriction} of $f$ that avoids the junction points in $L$.
     \end{itemize}
 
-\end{frame}
+  \end{frame}
+
+  \begin{frame}
+    \frametitle{Beyond permutations}
+ \begin{itemize}
+ \item Hellman's argument fails for arbitrary functions.
+ \end{itemize}
+ \begin{center}
+     \begin{tikzpicture}[roundnode/.style={circle, draw=green!60, fill=green!5, very thick, minimum size=3mm}]
+   %  \draw[-Latex, dashed] (aD) .. controls ($0.5*(aD) + 0.5*(bB) + (0, -0.5)$) .. (bB) {};
+   % \draw[-Latex, dashed] (0, -0.5) -- (aB);
+   % \draw[-Latex, dashed] (3, 0.5) -- (bA);
+   % \draw[-Latex, dashed] (bD) -- (8, 0);
+   \chainwithendpointswithoutf{0}{b}
+   \node[roundnode, draw=blue!60, fill=orange!5] at (bB) {};
+   \node[roundnode, draw=blue!60, fill=orange!5] at (bC) {};
+    \draw  ($(bC) + (-2, 1)$) node[roundnode] (X) {} edge[-Latex, dashed] (bC);
+    \draw  ($(bC) + (-1, 1)$) node[roundnode] (X) {} edge[-Latex, dashed] (bC);
+    \draw  ($(bC) + (0, 1)$) node[roundnode] (X) {} edge[-Latex, dashed] (bC);
+    \draw  ($(bC) + (1, 1)$) node[roundnode] (X) {} edge[-Latex, dashed] (bC);
+    \draw  ($(bC) + (2, 1)$) node[roundnode] (X) {} edge[-Latex, dashed] (bC);
+    \only<3->{\node[roundnode, draw=purple!60, fill=purple!5] at (bC) {};}
+    \begin{scope}[xshift = -1cm]
+    \only<5->{
+   \begin{scope}[rotate around = {45:(3,0)}]
+   \chainwithendpointswithoutf{0}{a}
+   \node[roundnode, draw=blue!60, fill=orange!5] at (aB) {};
+   \node[roundnode, draw=blue!60, fill=orange!5] at (aC) {};
+   \node[roundnode, draw=purple!60, fill=purple!5] at (aD) {};
+ \end{scope}
+ }
+  \end{scope}
+\end{tikzpicture}
+\end{center}
+\pause
+ \only<-4>{\vspace{3cm}}
+  \begin{itemize}
+ \item There may be points with very many inverses (``junction points''), which cause paths to overlap quickly.
+   \pause
+   \pause
+   \pause
+   \pause
+    \item Fiat and Naor deal with this by storing $\alpha = (\alpha', L)$, where $L$ contains junction points along with their inverses. % NOTE: say "the list L"
+      \pause
+    \item Intuitively, $\alpha'$ is the data structure for a \emph{restriction} of $f$ that avoids the junction points in $L$.
+  \end{itemize}
+  \end{frame}
 
 \begin{frame}
   \frametitle{The story so far}
@@ -1060,7 +1098,8 @@
           \item Search-to-decision reductions
             \pause
           % for inverting arbitrary functions and inverting random functions
-          \item The size of the codomain doesn't matter (us and \cite{CorriganGibbs19}) \inlineauthor{cg} \inlineauthor{kogan}
+          % \item The size of the codomain doesn't matter (us and \cite{CorriganGibbs19}) \inlineauthor{cg} \inlineauthor{kogan}
+          \item A larger codomain does not make the problem harder (us and \cite{CorriganGibbs19}) \inlineauthor{cg} \inlineauthor{kogan}
         % \item Reduction from inverting random $f: [N] \to [M]$ to inverting random $f: [N] \to [M]$ (arbitrary to arbitrary already shown by \cite{CorriganGibbs19}).
           \end{itemize}
         \end{itemize}
@@ -1107,6 +1146,8 @@
         \item Improve Yao's lower bound against (general) non-adaptive algorithms?
           \pause
         \item $S^2 T = N^2$ algorithm for worst-case function inversion?
+          \pause
+        \item Improved algorithm for injective functions?
         \end{itemize}
       \end{frame}
 
