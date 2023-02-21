@@ -276,3 +276,5 @@ TSWLatexianTemp*
 *.lpz
 .DS_Store
 .fi-talk.tex.~undo-tree~
+*.vrb#
+fi-talk.synctex(busy) (1)

@@ -651,10 +651,18 @@
  \item No longer possible to cover the entire range.
    % it's not possible to cover the entire range with disjoint paths.
    \pause
- \item But, one can cover a small fraction with disjoint paths, then compose with a ``random'' function and repeat. \inlineauthor{hellman}
+ \item But, can still cover a small fraction with disjoint paths.
+   \pause
+ \item To boost the coverage, observe that inverting $g \circ f$ on $g(y)$ is enough to invert $f$ on $y$.
+   \pause
+ \item So, can repeatedly apply the basic scheme to many compositions $g_i \circ f$, for suitably chosen
+   ``rerandomization'' functions $g_i$.
+ %   compose $f$ with a ``rerandomization'' function $g$ a
+ % \item To boost the coverage, the idea is to repeatedly compose $f$ with a ``rerandomization'' function and cover a small fraction of the resu
+ %   then compose with a ``rerandomization'' function and repeat many times to boost the success probability.
    % $T \lessim N^2 / S^2$.
    \pause
- \item For \emph{random} functions, Hellman showed (heuristically) this can be made to work.
+ \item For \emph{random} functions, Hellman showed (heuristically) this can be made to work. \inlineauthor{hellman}
  % \pause
  % \item But \emph{arbitrary} functions $f$ may have points with very many inverses (``junction points''), which cause paths to overlap very quickly.
  % \item For $f$ \emph{arbitrary}, the same idea runs into trouble. There may be points with many inverses, which cause paths to overlap.
@@ -675,6 +683,7 @@
  \begin{itemize}
  \item Hellman's argument fails for arbitrary functions.
  \end{itemize}
+ \only<-3>{\vspace{0.5cm}}
  \begin{center}
      \begin{tikzpicture}[roundnode/.style={circle, draw=green!60, fill=green!5, very thick, minimum size=3mm}]
    %  \draw[-Latex, dashed] (aD) .. controls ($0.5*(aD) + 0.5*(bB) + (0, -0.5)$) .. (bB) {};
@@ -684,35 +693,36 @@
    \chainwithendpointswithoutf{0}{b}
    \node[roundnode, draw=blue!60, fill=orange!5] at (bB) {};
    \node[roundnode, draw=blue!60, fill=orange!5] at (bC) {};
-    \draw  ($(bC) + (-2, 1)$) node[roundnode] (X) {} edge[-Latex, dashed] (bC);
-    \draw  ($(bC) + (-1, 1)$) node[roundnode] (X) {} edge[-Latex, dashed] (bC);
+    \draw  ($(bC) + (-0.87, 0.5)$) node[roundnode] (X) {} edge[-Latex, dashed] (bC);
+    \draw  ($(bC) + (-0.87, 1)$) node[roundnode] (X) {} edge[-Latex, dashed] (bC);
     \draw  ($(bC) + (0, 1)$) node[roundnode] (X) {} edge[-Latex, dashed] (bC);
-    \draw  ($(bC) + (1, 1)$) node[roundnode] (X) {} edge[-Latex, dashed] (bC);
-    \draw  ($(bC) + (2, 1)$) node[roundnode] (X) {} edge[-Latex, dashed] (bC);
+    \draw  ($(bC) + (0.87, 1)$) node[roundnode] (X) {} edge[-Latex, dashed] (bC);
+    \draw  ($(bC) + (0.87, 0.5)$) node[roundnode] (X) {} edge[-Latex, dashed] (bC);
     \only<3->{\node[roundnode, draw=purple!60, fill=purple!5] at (bC) {};}
     \begin{scope}[xshift = -1cm]
-    \only<5->{
-   \begin{scope}[rotate around = {45:(3,0)}]
+    \only<4->{
+   \begin{scope}[rotate around = {-30:(3,0)}]
    \chainwithendpointswithoutf{0}{a}
    \node[roundnode, draw=blue!60, fill=orange!5] at (aB) {};
    \node[roundnode, draw=blue!60, fill=orange!5] at (aC) {};
    \node[roundnode, draw=purple!60, fill=purple!5] at (aD) {};
  \end{scope}
  }
-  \end{scope}
+\end{scope}
 \end{tikzpicture}
 \end{center}
 \pause
- \only<-4>{\vspace{3cm}}
+ % \only<-3>{\vspace{1cm}}
   \begin{itemize}
  \item There may be points with very many inverses (``junction points''), which cause paths to overlap quickly.
    \pause
    \pause
    \pause
-   \pause
+   \item Among other things, overlapping paths are redundant, causing massive inefficiency!
     \item Fiat and Naor deal with this by storing $\alpha = (\alpha', L)$, where $L$ contains junction points along with their inverses. % NOTE: say "the list L"
       \pause
     \item Intuitively, $\alpha'$ is the data structure for a \emph{restriction} of $f$ that avoids the junction points in $L$.
+    \item More precisely, the ``rerandomization'' functions are sampled using rejection sampling so that their range is $[N] - L$.
   \end{itemize}
   \end{frame}
 
