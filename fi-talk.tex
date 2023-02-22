@@ -21,6 +21,10 @@
 \usetikzlibrary{calc}
 \usetikzlibrary{positioning}
 
+\usepackage{pgfplots}
+\pgfplotsset{width=7cm,compat=1.10}
+\usepgfplotslibrary{fillbetween}
+
 \let\OLDitemize\itemize
 \renewcommand\itemize{\OLDitemize\addtolength{\itemsep}{5pt}}
 
@@ -222,6 +226,35 @@
      \node[roundnode, draw=orange!60, fill=orange!5] at (#2D) {};
      % \draw[-Latex, orange] (#2D) .. controls ($0.5*(#2A) + 0.5*(#2D) + (0, -0.5)$) .. (#2A);
    }
+
+%    \newcommand{\plotAsymptotics}{
+%      \begin{axis}[
+%     axis lines = left,
+%     xlabel = {\(\log(S)\textcolor{gray}{/\log(N)}\)},
+%     ylabel = {\(\log(T)\textcolor{gray}{/\log(N)}\)},
+%     legend pos=north east, % position the legend in the north-west corner
+%     legend style={draw=none, font=\scriptsize, anchor = west}, % remove the border around the legend
+%     % axis equal,
+%     % width=5cm,
+%     % height=9cm
+%     ymin = 0,
+%     ymax = 1,
+%     xmin = 0,
+%     xmax = 1,
+% ]
+% \addplot[color=blue, domain = 0:1, thick]{1 - x};
+% \addlegendentry{Permutations}
+% \addplot[color=red, domain = 0:1, thick]{1 - 0.01 - x};
+% \addlegendentry{Yao's bound}
+% \addplot[color=teal, domain = 0:1, thick]{2 - 2*x};
+% \addlegendentry{Random}
+% \addplot[color=brown, domain = 0:1, thick]{3 - 3*x};
+% \addlegendentry{Fiat and Naor}
+% \addplot[color=olive, domain = 0:1, thick, dashed]{1};
+% \addlegendentry{Trivial}
+% \addplot[color=olive, thick, dashed, const plot] coordinates {(1, 0) (1, 1)};
+% \end{axis}
+%    }
 
 % \newcommand{\roundnode}{roundnode/.style={circle, draw=green!60, fill=green!5, very thick, minimum size=5mm}}
 
@@ -516,7 +549,7 @@
  \begin{frame}[fragile]
    \frametitle{What did we just do?}
    \begin{itemize}
-   % \item What have we achieved?
+     % \item What have we achieved?
    % \pause
      % NOTE: say nonuniformity is reasonable for cryptographic adversaries here!
    \item We have a preprocessing algorithm $\P$ and an online algorithm $\A$. Preprocessing makes a $S$-bit data structure $\alpha = \P(f)$.
@@ -714,11 +747,12 @@
 \pause
  % \only<-3>{\vspace{1cm}}
   \begin{itemize}
- \item There may be points with very many inverses (``junction points''), which cause paths to overlap quickly.
+    % \item There may be points with very many inverses (``junction points''), which cause paths to overlap quickly.
+   \item Arbitrary functions can have ``junction points'' with many inverses.
    \pause
    \pause
    \pause
-   \item Among other things, overlapping paths are redundant, causing massive inefficiency!
+   \item Paths collide at these points, causing all sorts of problems.
     \item Fiat and Naor deal with this by storing $\alpha = (\alpha', L)$, where $L$ contains junction points along with their inverses. % NOTE: say "the list L"
       \pause
     \item Intuitively, $\alpha'$ is the data structure for a \emph{restriction} of $f$ that avoids the junction points in $L$.
@@ -769,7 +803,38 @@
       \end{tabular}
     \end{table}
   }
+\end{frame}
 
+\begin{frame}
+  \frametitle{The Story So Far}
+  \begin{tikzpicture}
+    \begin{axis}[
+    axis lines = left,
+    xlabel = {\(\log(S)\textcolor{gray}{/\log(N)}\)},
+    ylabel = {\(\log(T)\textcolor{gray}{/\log(N)}\)},
+    legend pos=north east, % position the legend in the north-west corner
+    legend style={draw=none, font=\scriptsize, anchor = west, at={(1.05, 0.7)}}, % remove the border around the legend
+    % axis equal,
+    % width=5cm,
+    % height=9cm
+    ymin = 0,
+    ymax = 1,
+    xmin = 0,
+    xmax = 1,
+    ]
+ \addplot[color=red, domain = 0:1, thick]{1 - 0.01 - x};
+\addlegendentry{Lower bound (Yao)}
+\addplot[color=brown, domain = 0:1, thick]{1 - x};
+\addlegendentry{Permutations (Hellman)}
+\addplot[color=teal, domain = 0:1, thick]{2 - 2*x};
+\addlegendentry{Random (Hellman)}
+\addplot[color=blue, domain = 0:1, thick]{3 - 3*x};
+\addlegendentry{Arbitrary (Fiat and Naor)}
+\addplot[color=olive, domain = 0:1, thick, dashed]{1};
+\addlegendentry{Trivial}
+\addplot[color=olive, thick, dashed, const plot] coordinates {(1, 0) (1, 1)};
+\end{axis}
+\end{tikzpicture}
   \pause
 
   \begin{itemize}
@@ -778,7 +843,7 @@
     \pause
   \item A: Sort of and sort of!
   \end{itemize}
-  \end{frame}
+\end{frame}
 
   % \begin{frame}
   %   \frametitle{Result \#1: Improved Fiat and Naor}
@@ -798,19 +863,25 @@
     \begin{frame}
     \frametitle{Result \#1: A Simple Improvement to Fiat-Naor}
     \begin{itemize}
-    \item Recall that for $f$ arbitrary, Hellman's algorithm is tripped up by points with many inverses (``junction points'').
-      % Recall that Fiat and Naor want to apply Hellman's ``disjoint paths'' idea, but run into trouble due to points with many inverses. Let's call these ``junction points''.
-        \pause
-      \item Fiat and Naor's idea is to (implicitly) work with a \emph{restriction} of $f$ that leaves out the junction points.
-        \pause
-      \item Preprocessing conveys the restriction to online via a list $L$ of junction points (along with their inverses).
-       % \item Fiat and Naor use $L := \{(x_i, f(x_i))\}_{x_i \sim [N]}$.
+    % \item Recall that for $f$ arbitrary, Hellman's algorithm is tripped up by points with many inverses (``junction points'').
+    %   % Recall that Fiat and Naor want to apply Hellman's ``disjoint paths'' idea, but run into trouble due to points with many inverses. Let's call these ``junction points''.
+    %     \pause
+    %   \item Fiat and Naor's idea is to (implicitly) work with a \emph{restriction} of $f$ that leaves out the junction points.
+    %     \pause
+      % Recall that Fiat and Naor work with a restriction of $f$ that avoids hitting a list $L$ of \emph{junction points} with many inverses.
+        % \item Preprocessing conveys the restriction to online via a list $L$ of junction points (along with their inverses).
+      % \item Preprocessing sends $L$ to online by storing it in the advice $\alpha$.
+      % \item Fiat and Naor use $L := \{(x_i, f(x_i))\}_{x_i \sim [N]}$.
+      % \item Remember Fiat and Naor's list $L$?
+      \item Recall that Fiat and Naor's preprocessing and online algorithms must agree on a list $L$ of ``junction points''.
          \pause
          % \item We observe that the tradeoff $S^3 T \simeq N^3$ comes from $|L| S^2 T \simeq N^3$ with $|L| \simeq S$.
        \item We observe that the tradeoff $T \lesssim N^3 / S^3$ comes from
          \[T \lesssim \frac{1}{|L|} \cdot \frac{N^3}{S^2}.\] \mypause
-         \item So we'd love for $L$ to be longer, but it needs to fit in $\alpha \in \{0, 1\}^S$.
-           \pause
+       \item Fiat and Naor get $|L|\simeq S$, but this is the hard limit, since $L$ needs to fit into $S$-bit advice $\alpha$.
+         % so it can hold no more than $S$ points.
+         % \item So we'd love for $L$ to be longer, but it needs to fit in $\alpha \in \{0, 1\}^S$.
+         %   \pause
          \item Or does it?
         % by writing down a list $L$ of junction points.
       % \item Intuitively, Fiat and Naor's algorithm implicitl \emph{restriction} of $f$ that avoids the junction points.
@@ -829,7 +900,7 @@
     \item  Fiat and Naor's list $L$ actually consists of images $f(x_i)$ of random points $x_i \sim [N]$.
       \pause
     \item Our idea: Instead of reading $L$ from $\alpha$,
-      $\A$ recovers $L$ by evaluating $f$ on the random  points $x_i$.
+      $\A$ recovers $L$ by evaluating $f$ on the same random  points $x_i$.
       \pause
     % \item This allows $|L| \simeq T$, so we can get
     %   \[S^2 T \max\{S, T\} \simeq N^3.\]
@@ -841,18 +912,20 @@
       % NOTE: can ask audience to find the issue here
     \item But I've cheated here...
       \pause
-    \item How do $\A$ and $\P$ agree on the same list of random values $x_i$?
+    \item How do $\A$ and $\P$ agree on the \emph{same} list of random values $x_i$?
       \end{itemize}
   \end{frame}
 
   \begin{frame}
     \frametitle{Sharing Randomness}
     \begin{itemize}
-    \item We show that we can assume \emph{shared randomness}  without loss of generality. Here, that means shared random $x_i$.
+    \item We show that we can assume \emph{shared randomness}  without loss of generality.
+      % Here, that means shared random $x_i$.
       \pause
     % \item Applies to all space-time tradeoffs in the ``non-uniform model'' (i.e., optimizing $S$ and $T$).
     %   \pause
-    \item More precisely, shared randomness costs an additive $O(\log N)$ in $S$ and a factor 2 increase in failure probability.
+    \item More precisely, shared randomness costs an additive $O(\log N)$ in $S$.
+      % and a factor 2 increase in failure probability.
       \pause
     \item The proof adapts \emph{Newman's lemma} \cite{Newman91} \inlineauthor{newman} from communication complexity.
       \pause
@@ -860,7 +933,8 @@
       \pause
     \item If the number $\Sigma = O(N)$ of fixed strings is large enough, this will be almost as good as fully random.
       \pause
-    \item This approach leans fairly heavily on non-uniformity. But in practice, can just instantiate a random oracle.
+      % \item This approach leans fairly heavily on non-uniformity. But in practice, can just instantiate a random oracle.
+    \item In practice, can instantiate a random oracle.
     \end{itemize}
   \end{frame}
 
@@ -909,7 +983,81 @@
     \end{table}
   }
   % For comparison, it's helpful to rewrite our tradeoff as $T \lesssim N^3 / (S^2 T)$.
-  \end{frame}
+\end{frame}
+
+\begin{frame}
+  \frametitle{In Context}
+    \begin{tikzpicture}
+\begin{axis}[
+    axis lines = left,
+    xlabel = {\(\log(S)\textcolor{gray}{/\log(N)}\)},
+    ylabel = {\(\log(T)\textcolor{gray}{/\log(N)}\)},
+    legend pos=north east, % position the legend in the north-west corner
+    legend style={draw=none, font=\scriptsize, anchor = west, at={(1.05, 0.7)}}, % remove the border around the legend
+    % axis equal,
+    % width=5cm,
+    % height=9cm
+    ymin = 0,
+    ymax = 1,
+    xmin = 0,
+    xmax = 1,
+    ]
+\addplot[name path = fn, color=blue, domain = 0:1, thick]{3 - 3*x};
+\addlegendentry{Arbitrary (Fiat-Naor)}
+
+    \path[name path = axis, ] (axis cs:1, 1) -- (axis cs:0, 1);
+
+\only<2->{
+\addplot[name path = ours, color=green, domain = 0:1, thick]{3/2 - x};
+\addlegendentry{Arbitrary (Our improvement)}
+                \addplot [
+        thick,
+        color=green,
+        fill=green,
+        fill opacity=0.05,
+        forget plot,
+    ]
+    fill between[
+        of=ours and axis,
+        ];
+
+        \addplot[color = brown, only marks, forget plot] coordinates {(0.75,0.75)};
+    \node[anchor=west] at (axis cs:0.77,0.8) {$\textcolor{brown}{S = T}$};
+        }
+
+
+        \addplot [
+        thick,
+        color=green,
+        fill=green,
+        fill opacity=0.05,
+        forget plot,
+    ]
+    fill between[
+        of=fn and axis,
+        ];
+
+
+
+
+
+
+
+\addplot[color=red!70, domain = 0:1, thick, dotted]{1 - 0.02 - x};
+\addlegendentry{Lower bound (Yao)}
+\addplot[color=gray, domain = 0:1, thick]{1 - x};
+\addlegendentry{Permutations (Hellman)}
+\addplot[color=gray, domain = 0:1, thick, dashdotted]{2 - 2*x};
+\addlegendentry{Random (Hellman)}
+\addplot[color=olive, domain = 0:1, thick, dashed]{1};
+\addlegendentry{Trivial}
+\addplot[color=olive, thick, dashed, const plot] coordinates {(1, 0) (1, 1)};
+
+% \addplot[color=black, domain = 0:1, thick, dashed]{x};
+% \addlegendentry{$S = T$}
+\end{axis}
+\end{tikzpicture}
+\end{frame}
 
                     % & $S^2 \cdot T \cdot \max\{S, T\} \leq \tilde{O}(N^3)$
   \begin{frame}
@@ -1153,11 +1301,19 @@
         \begin{itemize}
         \item Only one real open problem--\pause\textbf{close the gap!}
           \pause
-        \item Improve Yao's lower bound against (general) non-adaptive algorithms?
+        \item Moonshots:
+        \begin{itemize}
+         \item Improve Yao's lower bound against (general) non-adaptive algorithms?
           \pause
         \item $S^2 T = N^2$ algorithm for worst-case function inversion?
           \pause
-        \item Improved algorithm for injective functions?
+        \end{itemize}
+        \item Possibly more tractable:
+\begin{itemize}
+        \item Better algorithms for inverting a small fraction of the range? That is, improving on De, Trevisan and Tulsiani \cite{DTT10}?
+          \pause
+        \item Better algorithms for injective functions?
+\end{itemize}
         \end{itemize}
       \end{frame}
 
