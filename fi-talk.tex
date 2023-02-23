@@ -1,5 +1,7 @@
 % \documentclass[usenames, dvipsnames, t, table, handout]{beamer}
+% \newcommand{\handout}[1]{#1}
 \documentclass[usenames, dvipsnames, t, table]{beamer}
+\newcommand{\handout}[1]{}
 % === BEAMER AND FORMATTING STUFF ===
 
 \usetheme{default}
@@ -552,7 +554,7 @@
      % \item What have we achieved?
    % \pause
      % NOTE: say nonuniformity is reasonable for cryptographic adversaries here!
-   \item We have a preprocessing algorithm $\P$ and an online algorithm $\A$. Preprocessing makes a $S$-bit data structure $\alpha = \P(f)$.
+   \item We have a preprocessing algorithm $\P$ and an online algorithm $\A$. Preprocessing makes a data structure $\alpha = \P(f)$, which is not too large (at most $S$ bits).
      \pause
      % NOTE: be very clear about what $\P$, $\sigma$, and $\A$ are
      % $\alpha \gets \P(f)$.
@@ -577,14 +579,14 @@
      % \item Notice that Hellman's algorithm only requires the ability to evaluate $f$ (\emph{black-box} access).
      % \item Only requires \emph{black-box} access to $f$.
   \pause
-\item More generally, \textbf{the goal} is to design a preprocessing algorithm $(\P, \A)$ such that for all $f$ and all $y \in f([N])$,
+\item More generally, \textbf{the goal} is to design a pair of algorithms $(\P, \A)$ such that for all $f$ and all $y \in f([N])$,
      % \pause $\forall f: [N] \to [N], \forall y \in f([N])$,
   % \[\Pr_{r_1, r_2 \sim \{0, 1\}^\ell}[\alpha \gets \P(f, r_1); p' \gets \A^f(\alpha, y, r_2); f(p') = y] \geq 9/10.\]
-     \[\Pr[\alpha \gets \P(f); x \gets \A^f(\alpha, y); f(x) = y] \geq 9/10.\]
+     \[\Pr[\alpha \gets \P(f); x \gets \A^f(\alpha, y); f(x) = y] \geq \text{constant}.\]
      \mypause
-   \item In this model, $\P$ and $\A$ have \textbf{unbounded} computational power,
+   \item In this model, $\P$ and $\A$ have \textbf{unbounded} computational power.
      \pause
-   \item But, $\alpha$ has bitlength at most $S$, and $\A$ can make at most $T$ evaluations of $f$.
+   \item But, $\alpha$ must have bitlength no more than $S$, and $\A$ can make at most $T$ evaluations of $f$.
    \end{itemize}
  \end{frame}
 
@@ -604,7 +606,7 @@
  % \end{frame}
 
  \begin{frame}
-   \frametitle{Applications}
+   \frametitle{Application scenarios}
    % \begin{itemize}
    % \item They compute $\alpha = \P(f, r)$.
    % % \item They devise two algorithms $\P, \A$. Then they spend years and billions of dollars preprocessing a data structure $\alpha = \P(f)$.
@@ -618,7 +620,6 @@
      % they can quickly (using few evaluations of $f$) find $p$ (or a value that hashes to $p$, which is just as good for most purposes.)
      % Or, a value that hashes to p
      % \item Other scenarios:
-   Scenarios
    \begin{itemize}
    \item The NSA wants to break a widely used cryptographic function, such as AES-128
      \pause
@@ -686,7 +687,7 @@
    \pause
  \item But, can still cover a small fraction with disjoint paths.
    \pause
- \item To boost the coverage, observe that inverting $g \circ f$ on $g(y)$ is enough to invert $f$ on $y$.
+ \item To boost the coverage, observe that inverting $g \circ f$ on $g(y)$ is often enough to invert $f$ on $y$.
    \pause
  \item So, can repeatedly apply the basic scheme to many compositions $g_i \circ f$, for suitably chosen
    ``rerandomization'' functions $g_i$.
@@ -779,22 +780,22 @@
         Hellman 1980 \inlineauthor{hellman}
                & permutations
                % & $S \cdot T \leq O(N \log N)$
-               & $T \leq O((N \log N) / S)$
+               & $T \lesssim N/ S$
                & $S = T \lesssim \sqrt{N}$ \pause \\    %\hline
         Yao 1990 \inlineauthor{yao}
                &permutations
                % & $S \cdot T \geq \Omega(N \log N)$
-               & $T \geq \Omega((N \log N) / S)$
+               & $T \gtrsim N / S$
                & $S = T \gtrsim \sqrt{N}$ \pause \\
         Hellman 1980 \inlineauthor{hellman}
                & random $f$
                % & $S^2 \cdot T \leq \tilde{O}(N^2)$
-               & $T \leq \tilde{O}(N^2/S^2)$
+               & $T \lesssim N^2/S^2$
                & $S = T \lesssim N^{2/3}$ \pause \\
         Fiat-Naor 1991 \inlineauthor{fiat} \inlineauthor{naor}
                & all functions
                % &$S^3 \cdot T \leq \tilde{O}(N^3)$
-               & $T \leq \tilde{O}(N^3/S^3)$
+               & $T \lesssim N^3/S^3$
                & $S = T \lesssim N^{3/4}$ \\
         % \only<2->{Hellman 1980 & random $f$ & $S^2 \cdot T \leq \tilde{O}(N^2)$ & $S = T \lesssim N^{2/3}$ \\}
         % \only<3->{Yao 1990 &permutations & \textcolor{red}{$S \cdot T \geq \Omega(N \log N)$} & \textcolor{red}{$S = T \gtrsim \sqrt{N}$} \\}
@@ -969,16 +970,16 @@
       \begin{tabular}{p{2cm}lll}
         Result  & Applies To & Tradeoff & Key Point \\
         \hline
-        Hellman 1980 \inlineauthor{hellman} & permutations  & $T \leq O((N \log N) / S)$ & $S = T \lesssim \sqrt{N}$ \\    %\hline
-        Yao 1990 \inlineauthor{yao} &permutations & $T \geq \Omega((N \log N)/S)$ & $S = T \gtrsim \sqrt{N}$ \\
-        Hellman 1980 \inlineauthor{hellman} & random $f$ & $T \leq \tilde{O}(N^2/S^2)$ & $S = T \lesssim N^{2/3}$ \\
-        Fiat-Naor 1991 \inlineauthor{fiat} \inlineauthor{naor} & all functions  &$T \leq \tilde{O}(N^3/S^3)$ & $S = T \lesssim N^{3/4}$ \pause  \\
+        Hellman 1980 \inlineauthor{hellman} & permutations  & $T \lesssim N / S$ & $S = T \lesssim \sqrt{N}$ \\    %\hline
+        Yao 1990 \inlineauthor{yao} &permutations & $T \gtrsim N/S$ & $S = T \gtrsim \sqrt{N}$ \\
+        Hellman 1980 \inlineauthor{hellman} & random $f$ & $T \lesssim N^2/S^2$ & $S = T \lesssim N^{2/3}$ \\
+        Fiat-Naor 1991 \inlineauthor{fiat} \inlineauthor{naor} & all functions  &$T \lesssim N^3/S^3$ & $S = T \lesssim N^{3/4}$ \pause  \\
         \rowcolor{green!30}
-        This work & all functions & $T \leq \tilde{O}(N^{3/2}/S)$ & $S = T \lesssim N^{3/4}$
+        This work & all functions &$T \lesssim N^3 / (S^2 T)$ & $S = T \lesssim N^{3/4}$
                                                                             \pause
         \\
         \rowcolor{green!30}
-        &&  $T \lesssim N^3 / (S^2 T)$ & \\
+        &&    $T \lesssim N^{3/2}/S$ & \\
       \end{tabular}
     \end{table}
   }
@@ -1107,7 +1108,7 @@
       \pause
     \item We achieve, for example,
      % \[S = O(N \log \log N), T = O(N \log \log N / \log N).\]
-      \[S = O(N \log \log N), T = O(N / \log^c N)\]
+      \[S = O_c(N \log \log N), T = O(N / \log^c N)\]
       for any constant $c$.
           \mypause
           \item Thus non-adaptive algorithms are not the barren, lifeless desert previously expected...
@@ -1422,7 +1423,7 @@
   \begin{frame}
     \frametitle{Thank you!}
     % In the infamous words of... catch me outside, how bout dat?
-    I'm happy to take additional questions offline. You can ping me at \texttt{sp2473@cornell.edu}.
+    I'm happy to take additional questions offline. You can ping me at \texttt{speters@cs.cornell.edu}.
   \end{frame}
 
   \begin{frame}[allowframebreaks]
