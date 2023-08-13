@@ -563,7 +563,8 @@
      % takes $\sigma$ and $y \in f([N])$ as input and returns $x \gets \A^f(\sigma, y)$. It only evaluates $f$ only $T$ times.
    % \item Need $S = O((N / T) \log N).$
 \item Hellman's algorithm uses $S = O((N \log N) / T).$
-     % \pause
+     % \item Hellman's algorithm uses $T \simeq N/S.$
+% \pause
    % \item The online algorithm evaluates $f$ only $T$ times.
      % \item Given a permutation $f$, if we store roughly $N / T$ elements depending on $f$, we can invert any $y \in [N]$ using at most $T$ evaluations of $f$.
    % \item Can choose the number ``$T$'' of online evaluations of $f$.
@@ -625,7 +626,11 @@
      \pause
    \item Hackers want to recover passwords from a stolen database of password hashes (Rainbow Tables)
      \pause
-   \item Theoretical computer scientists want better algorithms for 3-SUM \cite{GGH+DataStructuresMeet2020}, \inlineauthor{sasha} \inlineauthor{siyao} \inlineauthor{thibaut} \inlineauthor{sunoo} \inlineauthor{vinod}, multiparty pointer jumping \cite{CorriganGibbs19}, \inlineauthor{cg} \inlineauthor{kogan} systematic substring search \cite{CorriganGibbs19}, ...
+   \item Theoretical computer scientists want better algorithms for 3-SUM \cite{GGH+DataStructuresMeet2020}, \inlineauthor{sasha} \inlineauthor{siyao} \inlineauthor{thibaut} \inlineauthor{sunoo} \inlineauthor{vinod}
+     \pause
+     multiparty pointer jumping \cite{CorriganGibbs19}, \inlineauthor{cg} \inlineauthor{kogan}
+     \pause
+     systematic substring search \cite{CorriganGibbs19}, ...
      \end{itemize}
    \end{frame}
 
