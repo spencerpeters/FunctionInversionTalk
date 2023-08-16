@@ -7,7 +7,7 @@
 \usetheme{default}
 \usefonttheme{structurebold}
 \setbeamertemplate{navigation symbols}{}
-% \setbeamertemplate{footline}[frame number]
+\setbeamertemplate{footline}[frame number]
 
 % Unnumbered footnote with no rule
 \renewcommand*\footnoterule{}%
@@ -549,20 +549,20 @@
  \end{frame}
 
  \begin{frame}[fragile]
-   \frametitle{What did we just do?}
+   \frametitle{Stepping back}
    \begin{itemize}
      % \item What have we achieved?
    % \pause
      % NOTE: say nonuniformity is reasonable for cryptographic adversaries here!
-   \item We have a preprocessing algorithm $\P$ and an online algorithm $\A$. Preprocessing makes a data structure $\alpha = \P(f)$, which is not too large (at most $S$ bits).
-     \pause
+   % \item We have a preprocessing algorithm $\P$ and an online algorithm $\A$. Preprocessing makes a data structure $\alpha = \P(f)$, which is not too large (at most $S$ bits).
+   %   \pause
      % NOTE: be very clear about what $\P$, $\sigma$, and $\A$ are
      % $\alpha \gets \P(f)$.
-   \item $\A^f(\alpha, y)$ uses $\alpha$ to invert $y$. It treats $f$ as a \emph{black box} and evaluates it $\leq T$ times.
-     \pause
+   % \item $\A^f(\alpha, y)$ uses $\alpha$ to invert $y$. It treats $f$ as a \emph{black box} and evaluates it $\leq T$ times.
+     % \pause
      % takes $\sigma$ and $y \in f([N])$ as input and returns $x \gets \A^f(\sigma, y)$. It only evaluates $f$ only $T$ times.
    % \item Need $S = O((N / T) \log N).$
-\item Hellman's algorithm uses $S = O((N \log N) / T).$
+% \item Hellman's algorithm uses $S = O((N \log N) / T).$
      % \item Hellman's algorithm uses $T \simeq N/S.$
 % \pause
    % \item The online algorithm evaluates $f$ only $T$ times.
@@ -579,15 +579,16 @@
      % We call this a time-space tradeoff since $T$ is a lower bound on the time needed to invert $f$, and $S$ is a lower bound on the space needed. The values S and T are clean abstractions of the actual space adn time requirements of the inversion algorithm.
      % \item Notice that Hellman's algorithm only requires the ability to evaluate $f$ (\emph{black-box} access).
      % \item Only requires \emph{black-box} access to $f$.
-  \pause
-\item More generally, \textbf{the goal} is to design a pair of algorithms $(\P, \A)$ such that for all $f$ and all $y \in f([N])$,
+  % \pause
+\item \textbf{Goal:} design a pair of algorithms $(\P, \A)$ such that for all $f$ and all $y \in f([N])$,
      % \pause $\forall f: [N] \to [N], \forall y \in f([N])$,
   % \[\Pr_{r_1, r_2 \sim \{0, 1\}^\ell}[\alpha \gets \P(f, r_1); p' \gets \A^f(\alpha, y, r_2); f(p') = y] \geq 9/10.\]
      \[\Pr[\alpha \gets \P(f); x \gets \A^f(\alpha, y); f(x) = y] \geq \text{constant}.\]
      \mypause
    \item In this model, $\P$ and $\A$ have \textbf{unbounded} computational power.
      \pause
-   \item But, $\alpha$ must have bitlength no more than $S$, and $\A$ can make at most $T$ evaluations of $f$.
+   \item We aim to \textbf{minimize} the bitlength $S$ of $\alpha$, and the number of queries $T$ that $\A$ makes to $f$.
+     % $\alpha$ must have bitlength no more than $S$, and $\A$ can make at most $T$ evaluations of $f$.
    \end{itemize}
  \end{frame}
 
@@ -767,7 +768,7 @@
   \end{frame}
 
 \begin{frame}
-  \frametitle{The story so far}
+  \frametitle{The Story So Far}
 
  \vspace{-0.5cm}
  % \pause
@@ -801,7 +802,7 @@
                & all functions
                % &$S^3 \cdot T \leq \tilde{O}(N^3)$
                & $T \lesssim N^3/S^3$
-               & $S = T \lesssim N^{3/4}$ \\
+               & $S = T \lesssim N^{3/4}$ \pause \\
         % \only<2->{Hellman 1980 & random $f$ & $S^2 \cdot T \leq \tilde{O}(N^2)$ & $S = T \lesssim N^{2/3}$ \\}
         % \only<3->{Yao 1990 &permutations & \textcolor{red}{$S \cdot T \geq \Omega(N \log N)$} & \textcolor{red}{$S = T \gtrsim \sqrt{N}$} \\}
         % \only<4->{Fiat-Naor 1991 & all functions  &$S^3 \cdot T \leq \tilde{O}(N^3)$ & $S = T \simeq N^{3/4}$ \\}
@@ -809,41 +810,7 @@
       \end{tabular}
     \end{table}
   }
-\end{frame}
-
-\begin{frame}
-  \frametitle{The Story So Far}
-  \begin{tikzpicture}
-    \begin{axis}[
-    axis lines = left,
-    xlabel = {\(\log(S)\textcolor{gray}{/\log(N)}\)},
-    ylabel = {\(\log(T)\textcolor{gray}{/\log(N)}\)},
-    legend pos=north east, % position the legend in the north-west corner
-    legend style={draw=none, font=\scriptsize, anchor = west, at={(1.05, 0.7)}}, % remove the border around the legend
-    % axis equal,
-    % width=5cm,
-    % height=9cm
-    ymin = 0,
-    ymax = 1,
-    xmin = 0,
-    xmax = 1,
-    ]
- \addplot[color=red, domain = 0:1, thick]{1 - 0.01 - x};
-\addlegendentry{Lower bound (Yao)}
-\addplot[color=brown, domain = 0:1, thick]{1 - x};
-\addlegendentry{Permutations (Hellman)}
-\addplot[color=teal, domain = 0:1, thick]{2 - 2*x};
-\addlegendentry{Random (Hellman)}
-\addplot[color=blue, domain = 0:1, thick]{3 - 3*x};
-\addlegendentry{Arbitrary (Fiat and Naor)}
-\addplot[color=olive, domain = 0:1, thick, dashed]{1};
-\addlegendentry{Trivial}
-\addplot[color=olive, thick, dashed, const plot] coordinates {(1, 0) (1, 1)};
-\end{axis}
-\end{tikzpicture}
-  \pause
-
-  \begin{itemize}
+    \begin{itemize}
     % \item Central open problem is the gap between Yao's lower bound and the algorithms due to Hellman and Fiat and Naor.
   \item Q: Can we improve Fiat-Naor? Can we improve Yao's lower bound?
     \pause
@@ -851,122 +818,48 @@
   \end{itemize}
 \end{frame}
 
-  % \begin{frame}
-  %   \frametitle{Result \#1: Improved Fiat and Naor}
-  %   \begin{itemize}
-  %   \item Hellman's algorithm crucially relied on $f$ being a permutation--each point having exactly one inverse.
-  %     \pause
-  %   \item Generalizing the algorithm to random functions $f$ means overlapping paths, but $T \simeq N^2 / S^2$ is still achievable.
-  %     \pause
-  %   \item But \emph{arbitrary} functions $f$ may have points with very many inverses (``junction points''), which cause paths to overlap very quickly.
-  %     \pause
-  %   \item Fiat and Naor deal with this by storing $\alpha = (\alpha', L)$, where $L$ contains junction points along with their inverses. % NOTE: say "the list L"
-  %     \pause
-  %   \item Intuitively, $\alpha'$ is the data structure for a \emph{restriction} of $f$ that avoids the junction points in $L$.
-  %   \end{itemize}
-  % \end{frame}
+% \begin{frame}
+%   \frametitle{The Story So Far}
+%   \begin{tikzpicture}
+%     \begin{axis}[
+%     axis lines = left,
+%     xlabel = {\(\log(S)\textcolor{gray}{/\log(N)}\)},
+%     ylabel = {\(\log(T)\textcolor{gray}{/\log(N)}\)},
+%     legend pos=north east, % position the legend in the north-west corner
+%     legend style={draw=none, font=\scriptsize, anchor = west, at={(1.05, 0.7)}}, % remove the border around the legend
+%     % axis equal,
+%     % width=5cm,
+%     % height=9cm
+%     ymin = 0,
+%     ymax = 1,
+%     xmin = 0,
+%     xmax = 1,
+%     ]
+%  \addplot[color=red, domain = 0:1, thick]{1 - 0.01 - x};
+% \addlegendentry{Lower bound (Yao)}
+% \addplot[color=brown, domain = 0:1, thick]{1 - x};
+% \addlegendentry{Permutations (Hellman)}
+% \addplot[color=teal, domain = 0:1, thick]{2 - 2*x};
+% \addlegendentry{Random (Hellman)}
+% \addplot[color=blue, domain = 0:1, thick]{3 - 3*x};
+% \addlegendentry{Arbitrary (Fiat and Naor)}
+% \addplot[color=olive, domain = 0:1, thick, dashed]{1};
+% \addlegendentry{Trivial}
+% \addplot[color=olive, thick, dashed, const plot] coordinates {(1, 0) (1, 1)};
+% \end{axis}
+% \end{tikzpicture}
+%   \pause
+
+%   \begin{itemize}
+%     % \item Central open problem is the gap between Yao's lower bound and the algorithms due to Hellman and Fiat and Naor.
+%   \item Q: Can we improve Fiat-Naor? Can we improve Yao's lower bound?
+%     \pause
+%   \item A: Sort of and sort of!
+%   \end{itemize}
+% \end{frame}
 
     \begin{frame}
-    \frametitle{Result \#1: A Simple Improvement to Fiat-Naor}
-    \begin{itemize}
-    % \item Recall that for $f$ arbitrary, Hellman's algorithm is tripped up by points with many inverses (``junction points'').
-    %   % Recall that Fiat and Naor want to apply Hellman's ``disjoint paths'' idea, but run into trouble due to points with many inverses. Let's call these ``junction points''.
-    %     \pause
-    %   \item Fiat and Naor's idea is to (implicitly) work with a \emph{restriction} of $f$ that leaves out the junction points.
-    %     \pause
-      % Recall that Fiat and Naor work with a restriction of $f$ that avoids hitting a list $L$ of \emph{junction points} with many inverses.
-        % \item Preprocessing conveys the restriction to online via a list $L$ of junction points (along with their inverses).
-      % \item Preprocessing sends $L$ to online by storing it in the advice $\alpha$.
-      % \item Fiat and Naor use $L := \{(x_i, f(x_i))\}_{x_i \sim [N]}$.
-      % \item Remember Fiat and Naor's list $L$?
-      \item Recall that Fiat and Naor's preprocessing and online algorithms must agree on a list $L$ of ``junction points''.
-         \pause
-         % \item We observe that the tradeoff $S^3 T \simeq N^3$ comes from $|L| S^2 T \simeq N^3$ with $|L| \simeq S$.
-       \item We observe that the tradeoff $T \lesssim N^3 / S^3$ comes from
-         \[T \lesssim \frac{1}{|L|} \cdot \frac{N^3}{S^2}.\] \mypause
-       \item Fiat and Naor get $|L|\simeq S$, but this is the hard limit, since $L$ needs to fit into $S$-bit advice $\alpha$.
-         % so it can hold no more than $S$ points.
-         % \item So we'd love for $L$ to be longer, but it needs to fit in $\alpha \in \{0, 1\}^S$.
-         %   \pause
-         \item Or does it?
-        % by writing down a list $L$ of junction points.
-      % \item Intuitively, Fiat and Naor's algorithm implicitl \emph{restriction} of $f$ that avoids the junction points.
-    %   \
-    % \item Fiat and Naor's idea is to include a list $L$ in the preprocessing,
-    %   to store storing $\alpha = (\alpha', L)$, where $L$ contains junction points along with their inverses. % NOTE: say "the list L"
-    %   \pause
-    % \item Intuitively, $\alpha'$ is the data structure for a \emph{restriction} of $f$ that avoids the junction points in $L$.
-    \end{itemize}
-  \end{frame}
-
-
-  \begin{frame}
-    \frametitle{Result \#1: A Simple Improvement to Fiat-Naor}
-    \begin{itemize}
-    \item  Fiat and Naor's list $L$ actually consists of images $f(x_i)$ of random points $x_i \sim [N]$.
-      \pause
-    \item Our idea: Instead of reading $L$ from $\alpha$,
-      $\A$ recovers $L$ by evaluating $f$ on the same random  points $x_i$.
-      \pause
-    % \item This allows $|L| \simeq T$, so we can get
-    %   \[S^2 T \max\{S, T\} \simeq N^3.\]
-    \item This allows $|L| \simeq T$, so we can get $T \lesssim N^3 / (S^2 T)$, or
-      \[
-        T \lesssim N^{3/2} / S.
-      \]
-      \mypause
-      % NOTE: can ask audience to find the issue here
-    \item But I've cheated here...
-      \pause
-    \item How do $\A$ and $\P$ agree on the \emph{same} list of random values $x_i$?
-      \end{itemize}
-  \end{frame}
-
-  \begin{frame}
-    \frametitle{Sharing Randomness}
-    \begin{itemize}
-    \item We show that we can assume \emph{shared randomness}  without loss of generality.
-      % Here, that means shared random $x_i$.
-      \pause
-    % \item Applies to all space-time tradeoffs in the ``non-uniform model'' (i.e., optimizing $S$ and $T$).
-    %   \pause
-    \item More precisely, shared randomness costs an additive $O(\log N)$ in $S$.
-      % and a factor 2 increase in failure probability.
-      \pause
-    \item The proof adapts \emph{Newman's lemma} \cite{Newman91} \inlineauthor{newman} from communication complexity.
-      \pause
-    \item The idea: rather than storing the random bits in full, store a random \emph{index} into a fixed list of strings.
-      \pause
-    \item If the number $\Sigma = O(N)$ of fixed strings is large enough, this will be almost as good as fully random.
-      \pause
-      % \item This approach leans fairly heavily on non-uniformity. But in practice, can just instantiate a random oracle.
-    \item In practice, can instantiate a random oracle.
-    \end{itemize}
-  \end{frame}
-
-  % \begin{frame}
-  %   \frametitle{In Context}
-  %   \scriptsize{
-  %   \begin{table}
-  %     \renewcommand{\arraystretch}{1.25}
-  %     \centering
-  %     \rowcolors{2}{gray!30}{gray!10}
-  %     \begin{tabular}{p{2cm}lll}
-  %       Result  & Applies To & Tradeoff & Key Point \\
-  %       \hline
-  %       Hellman 1980 \inlineauthor{hellman} & permutations & $S \cdot T \leq O(N \log N)$ & $S = T \lesssim \sqrt{N}$ \\    %\hline
-  %       Yao 1990 \inlineauthor{yao} & permutations & $S \cdot T \geq \Omega(N \log N)$ & $S = T \gtrsim \sqrt{N}$ \\
-  %       Hellman 1980 \inlineauthor{hellman} & random $f$ & $S^2 \cdot T \leq \tilde{O}(N^2)$ & $S = T \lesssim N^{2/3}$ \\
-  %       Fiat-Naor 1991 \inlineauthor{fiat} \inlineauthor{naor} & all functions &$S^3 \cdot T \leq \tilde{O}(N^3)$ & $S = T \lesssim N^{3/4}$ \pause  \\
-  %       \rowcolor{green!30}
-  %       This work & all functions & $T \leq \tilde{O}(N^{3/2}/S}$ & $S = T \lesssim N^{3/4}$ \\
-  %     \end{tabular}
-  %   \end{table}
-  %   }
-  % \end{frame}
-
-  \begin{frame}
-    \frametitle{In Context}
+    \frametitle{Part 1: A Simple Improvement to Fiat-Naor}
     \scriptsize{
     \begin{table}
       \renewcommand{\arraystretch}{1.25}
@@ -992,7 +885,7 @@
 \end{frame}
 
 \begin{frame}
-  \frametitle{In Context}
+  \frametitle{A Simple Improvement to Fiat-Naor}
     \begin{tikzpicture}
 \begin{axis}[
     axis lines = left,
@@ -1065,9 +958,123 @@
 \end{tikzpicture}
 \end{frame}
 
+  % \begin{frame}
+  %   \frametitle{Result \#1: Improved Fiat and Naor}
+  %   \begin{itemize}
+  %   \item Hellman's algorithm crucially relied on $f$ being a permutation--each point having exactly one inverse.
+  %     \pause
+  %   \item Generalizing the algorithm to random functions $f$ means overlapping paths, but $T \simeq N^2 / S^2$ is still achievable.
+  %     \pause
+  %   \item But \emph{arbitrary} functions $f$ may have points with very many inverses (``junction points''), which cause paths to overlap very quickly.
+  %     \pause
+  %   \item Fiat and Naor deal with this by storing $\alpha = (\alpha', L)$, where $L$ contains junction points along with their inverses. % NOTE: say "the list L"
+  %     \pause
+  %   \item Intuitively, $\alpha'$ is the data structure for a \emph{restriction} of $f$ that avoids the junction points in $L$.
+  %   \end{itemize}
+  % \end{frame}
+
+    \begin{frame}
+    \frametitle{A Simple Improvement to Fiat-Naor}
+    \begin{itemize}
+    % \item Recall that for $f$ arbitrary, Hellman's algorithm is tripped up by points with many inverses (``junction points'').
+    %   % Recall that Fiat and Naor want to apply Hellman's ``disjoint paths'' idea, but run into trouble due to points with many inverses. Let's call these ``junction points''.
+    %     \pause
+    %   \item Fiat and Naor's idea is to (implicitly) work with a \emph{restriction} of $f$ that leaves out the junction points.
+    %     \pause
+      % Recall that Fiat and Naor work with a restriction of $f$ that avoids hitting a list $L$ of \emph{junction points} with many inverses.
+        % \item Preprocessing conveys the restriction to online via a list $L$ of junction points (along with their inverses).
+      % \item Preprocessing sends $L$ to online by storing it in the advice $\alpha$.
+      % \item Fiat and Naor use $L := \{(x_i, f(x_i))\}_{x_i \sim [N]}$.
+      % \item Remember Fiat and Naor's list $L$?
+      \item Recall that Fiat and Naor's preprocessing and online algorithms must agree on a list $L$ of ``junction points''.
+         \pause
+         % \item We observe that the tradeoff $S^3 T \simeq N^3$ comes from $|L| S^2 T \simeq N^3$ with $|L| \simeq S$.
+       \item We observe that the tradeoff $T \lesssim N^3 / S^3$ comes from
+         \[T \lesssim \frac{1}{|L|} \cdot \frac{N^3}{S^2}.\] \mypause
+       \item Fiat and Naor get $|L|\simeq S$, but this is the hard limit, since $L$ needs to fit into $S$-bit advice $\alpha$.
+         % so it can hold no more than $S$ points.
+         % \item So we'd love for $L$ to be longer, but it needs to fit in $\alpha \in \{0, 1\}^S$.
+         %   \pause
+         \item Or does it?
+        % by writing down a list $L$ of junction points.
+      % \item Intuitively, Fiat and Naor's algorithm implicitl \emph{restriction} of $f$ that avoids the junction points.
+    %   \
+    % \item Fiat and Naor's idea is to include a list $L$ in the preprocessing,
+    %   to store storing $\alpha = (\alpha', L)$, where $L$ contains junction points along with their inverses. % NOTE: say "the list L"
+    %   \pause
+    % \item Intuitively, $\alpha'$ is the data structure for a \emph{restriction} of $f$ that avoids the junction points in $L$.
+    \end{itemize}
+  \end{frame}
+
+
+  \begin{frame}
+    \frametitle{A Simple Improvement to Fiat-Naor}
+    \begin{itemize}
+    \item  Fiat and Naor's list $L$ actually consists of images $f(x_i)$ of random points $x_i \sim [N]$.
+      \pause
+    \item Our idea: Instead of reading $L$ from $\alpha$,
+      $\A$ recovers $L$ by evaluating $f$ on the same random  points $x_i$.
+      \pause
+    % \item This allows $|L| \simeq T$, so we can get
+    %   \[S^2 T \max\{S, T\} \simeq N^3.\]
+    \item This allows $|L| \simeq T$, so we can get $T \lesssim N^3 / (S^2 T)$, or
+      \[
+        T \lesssim N^{3/2} / S.
+      \]
+      \mypause
+      % NOTE: can ask audience to find the issue here
+    \item But I've cheated here...
+      \pause
+    \item How do $\A$ and $\P$ agree on the \emph{same} list of random values $x_i$?
+      \end{itemize}
+  \end{frame}
+
+  \begin{frame}
+    \frametitle{Sharing Randomness}
+    \begin{itemize}
+    \item We show that we can assume \emph{shared randomness}  without loss of generality.
+      % Here, that means shared random $x_i$.
+      \pause
+    % \item Applies to all space-time tradeoffs in the ``non-uniform model'' (i.e., optimizing $S$ and $T$).
+    %   \pause
+    \item More precisely, shared randomness costs an additive $O(\log N)$ in $S$.
+      % and a factor 2 increase in failure probability.
+      \pause
+    \item The proof adapts \emph{Newman's lemma} \cite{Newman91} \inlineauthor{newman} from communication complexity.
+      \pause
+    \item The idea: rather than storing the random bits in full, store a random \emph{index} into a fixed list of strings.
+      \pause
+    \item If the number $\Sigma = O(N)$ of fixed strings is large enough, this will be almost as good as fully random.
+      \pause
+      % \item This approach leans fairly heavily on non-uniformity. But in practice, can just instantiate a random oracle.
+    \item In practice, can instantiate a random oracle.
+    \end{itemize}
+  \end{frame}
+
+  % \begin{frame}
+  %   \frametitle{In Context}
+  %   \scriptsize{
+  %   \begin{table}
+  %     \renewcommand{\arraystretch}{1.25}
+  %     \centering
+  %     \rowcolors{2}{gray!30}{gray!10}
+  %     \begin{tabular}{p{2cm}lll}
+  %       Result  & Applies To & Tradeoff & Key Point \\
+  %       \hline
+  %       Hellman 1980 \inlineauthor{hellman} & permutations & $S \cdot T \leq O(N \log N)$ & $S = T \lesssim \sqrt{N}$ \\    %\hline
+  %       Yao 1990 \inlineauthor{yao} & permutations & $S \cdot T \geq \Omega(N \log N)$ & $S = T \gtrsim \sqrt{N}$ \\
+  %       Hellman 1980 \inlineauthor{hellman} & random $f$ & $S^2 \cdot T \leq \tilde{O}(N^2)$ & $S = T \lesssim N^{2/3}$ \\
+  %       Fiat-Naor 1991 \inlineauthor{fiat} \inlineauthor{naor} & all functions &$S^3 \cdot T \leq \tilde{O}(N^3)$ & $S = T \lesssim N^{3/4}$ \pause  \\
+  %       \rowcolor{green!30}
+  %       This work & all functions & $T \leq \tilde{O}(N^{3/2}/S}$ & $S = T \lesssim N^{3/4}$ \\
+  %     \end{tabular}
+  %   \end{table}
+  %   }
+  % \end{frame}
+
                     % & $S^2 \cdot T \cdot \max\{S, T\} \leq \tilde{O}(N^3)$
   \begin{frame}
-    \frametitle{Non-Adaptive Algorithms}
+    \frametitle{Part 2: A Lower Bound}
     \begin{itemize}
     \item Recall that Yao's lower bound (for inverting \emph{arbitrary} functions) hasn't been improved in 30$+$ years.
       \pause
@@ -1103,106 +1110,141 @@
   \end{frame}
 
   \begin{frame}
-    \frametitle{Result \#2: A Non-Adaptive Algorithm}
+    \frametitle{A Simple Non-Adaptive Algorithm}
     \begin{itemize}
     \item Corrigan-Gibbs and Kogan speculated that there is no non-adaptive algorithm with
       \[S = o(N \log N) \text{ and } T = o(N).\]
       \nocite{CorriganGibbs19}
-    \item We show that there IS such an algorithm, that (barely!) outperforms the trivial inverter.
+    \item We observe that there IS in fact a very simple algorithm, that (barely!) outperforms the trivial inverter.
+      % there IS such an algorithm, that (barely!) outperforms the trivial inverter.
       % it IS possible to do (slightly!) better than the trivial inverter.
       \pause
-    \item We achieve, for example,
-     % \[S = O(N \log \log N), T = O(N \log \log N / \log N).\]
-      \[S = O_c(N \log \log N), T = O(N / \log^c N)\]
-      for any constant $c$.
+    % \item We achieve, for example,
+    %  % \[S = O(N \log \log N), T = O(N \log \log N / \log N).\]
+    %   \[S = O_c(N \log \log N), T = O(N / \log^c N)\]
+    %   for any constant $c$.
+    % \item Storing all but $\log T$ bits of an inverse for each range element allows to recover the inverse in time $T$, and achieves $S = O(N \log (N / T))$.
+      \item For each range element, just store all but $\log(T)$ bits of one of its inverses (implicitly defining $T$ candidate inverses). This achieves $S = O(N \log (N / T))$.
+    % \item It achieves $S = O(N \log (N / T))$.
+    %   \pause
+    % \item For example,
+    %         \[S = O_c(N \log \log N), T = O(N / \log^c N)\]
+    %   for any constant $c$.
+      % the first $\log N - \log T$ bits of an inverse for each of $N$ elements allows the inverse to be found in time $T$
           \mypause
-          \item Thus non-adaptive algorithms are not the barren, lifeless desert previously expected...
+          % \item Thus non-adaptive algorithms are not the barren, lifeless desert previously expected...
     \end{itemize}
   \end{frame}
 
-  \begin{frame}
-    \frametitle{The Algorithm}
-    \begin{itemize}
-    \item Try $T = 0$, for starters.
-      \pause
-    \item Why not $S = \log N$, so that $\alpha \in [N]$?
-      \pause
-    \item How many $y$'s can we invert? (What's trivial here?)
-      % Inverts 2 out of N elements. NOTE
-      \pause
-    \item $\A(\alpha, y)$ is just some (possibly random) function...
-      \pause
-      %NOTE: simplest thing we thought of. Preprocessing's job is then fixed, and we can answer how well it does.
-    \item Try $\A(\alpha, y) = \alpha + g(y) \pmod N$ where $g: [N] \to [N]$ is random.
-      \pause
-  \item For simplicity, assume $f$ is a permutation. Then
-    \begin{align*}
-      y \; \text{inverted} &\Leftrightarrow \alpha + g(y) = f^{-1}(y) \\
-                        &\Leftrightarrow \alpha = \alpha_y := f^{-1}(y) - g(y)
-    \end{align*}
-    \mypause
-  \item $\implies$ preprocessing returns $\alpha$ maximizing
-    % \[\mathrm{INV}_\alpha := |\{y \in [N] : \alpha = \alpha_y\}|.\]
-\[|\{y \in [N] : \alpha = \alpha_y\}|.\]
-    \end{itemize}
-  \end{frame}
+%   \begin{frame}
+%     \frametitle{The Algorithm}
+%     \begin{itemize}
+%     \item Try $T = 0$, for starters.
+%       \pause
+%     \item Why not $S = \log N$, so that $\alpha \in [N]$?
+%       \pause
+%     \item How many $y$'s can we invert? (What's trivial here?)
+%       % Inverts 2 out of N elements. NOTE
+%       \pause
+%     \item $\A(\alpha, y)$ is just some (possibly random) function...
+%       \pause
+%       %NOTE: simplest thing we thought of. Preprocessing's job is then fixed, and we can answer how well it does.
+%     \item Try $\A(\alpha, y) = \alpha + g(y) \pmod N$ where $g: [N] \to [N]$ is random.
+%       \pause
+%   \item For simplicity, assume $f$ is a permutation. Then
+%     \begin{align*}
+%       y \; \text{inverted} &\Leftrightarrow \alpha + g(y) = f^{-1}(y) \\
+%                         &\Leftrightarrow \alpha = \alpha_y := f^{-1}(y) - g(y)
+%     \end{align*}
+%     \mypause
+%   \item $\implies$ preprocessing returns $\alpha$ maximizing
+%     % \[\mathrm{INV}_\alpha := |\{y \in [N] : \alpha = \alpha_y\}|.\]
+% \[|\{y \in [N] : \alpha = \alpha_y\}|.\]
+%     \end{itemize}
+%   \end{frame}
 
-  \begin{frame}
-    \frametitle{The Algorithm}
-    \begin{itemize}
-    \item Recall $\alpha \in [N]$ inverts all $y \in [N]$ with
-      \[\alpha = \alpha_y := f^{-1}(y) - g(y).\]
-      \mypause
-    \item Key point: $g$ is random $\implies \alpha_y$'s are uniform and independent.
-      \pause
-    \item Balls and bins! With high probability, $\Omega(\log N / \log \log N)$ balls in the bin with most balls.
-      \pause
-  % \item $\implies \max_{\alpha} \mathrm{INV}_\alpha = \max_{\alpha} |\{y \in [N] : \alpha_y = \alpha\}| \geq \Omega(\log N / \log \log N)$.
-\item $\implies \max_{\alpha} |\{y \in [N] : \alpha_y = \alpha\}| \geq \Omega(\log N / \log \log N)$.
-    \end{itemize}
-  \end{frame}
+%   \begin{frame}
+%     \frametitle{The Algorithm}
+%     \begin{itemize}
+%     \item Recall $\alpha \in [N]$ inverts all $y \in [N]$ with
+%       \[\alpha = \alpha_y := f^{-1}(y) - g(y).\]
+%       \mypause
+%     \item Key point: $g$ is random $\implies \alpha_y$'s are uniform and independent.
+%       \pause
+%     \item Balls and bins! With high probability, $\Omega(\log N / \log \log N)$ balls in the bin with most balls.
+%       \pause
+%   % \item $\implies \max_{\alpha} \mathrm{INV}_\alpha = \max_{\alpha} |\{y \in [N] : \alpha_y = \alpha\}| \geq \Omega(\log N / \log \log N)$.
+% \item $\implies \max_{\alpha} |\{y \in [N] : \alpha_y = \alpha\}| \geq \Omega(\log N / \log \log N)$.
+%     \end{itemize}
+%   \end{frame}
 
-  \begin{frame}
-    \frametitle{The Algorithm}
-    \begin{itemize}
-    \item What if we allow ourselves to store another element $\alpha' \in [N]$?
-      % ourselves $S = 2 \log N$: 2 elements' worth of preprocessing?
-      \pause
-    \item First remove the ``balls'' $\{y \in [N] : \alpha_y = \alpha\}$ from consideration.
-      \pause
-    \item Toss the remaining balls into the bins again, using a fresh random function $g'$, and store new bin $\alpha'$ with most balls.
-      \pause
-    \item Online computes the two candidates $x = g(y) + \alpha$, $x' = g'(y) + \alpha'$.
-      % \begin{align*}
-      %   x &= g(y) + \alpha \\
-      %   x' &= g'(y) + \alpha'
-      % \end{align*}
-      % each inverting $\Omega(\log N / \log \log N)$ $y$'s.
-      \pause
-    \item It evaluates $f$ on each to check if $f(x) = y$ or $f(x') = y$, and outputs whichever passes the check (if any). Non-adaptive!
-      \pause
-    \item For the full algorithm, instead of repeating twice, we repeat $r = O(N / (\log N / \log \log N))$ times.
-    % \item Store inverses for these in a lookup table.
-      \pause
-      %NOTE: takes a bit more work to get polylog here.
-    \item $S = O(r \log N) = O(N \log \log N)$, $T = O(r) = O(N \log \log N / \log N)$.
-    \end{itemize}
-  \end{frame}
+%   \begin{frame}
+%     \frametitle{The Algorithm}
+%     \begin{itemize}
+%     \item What if we allow ourselves to store another element $\alpha' \in [N]$?
+%       % ourselves $S = 2 \log N$: 2 elements' worth of preprocessing?
+%       \pause
+%     \item First remove the ``balls'' $\{y \in [N] : \alpha_y = \alpha\}$ from consideration.
+%       \pause
+%     \item Toss the remaining balls into the bins again, using a fresh random function $g'$, and store new bin $\alpha'$ with most balls.
+%       \pause
+%     \item Online computes the two candidates $x = g(y) + \alpha$, $x' = g'(y) + \alpha'$.
+%       % \begin{align*}
+%       %   x &= g(y) + \alpha \\
+%       %   x' &= g'(y) + \alpha'
+%       % \end{align*}
+%       % each inverting $\Omega(\log N / \log \log N)$ $y$'s.
+%       \pause
+%     \item It evaluates $f$ on each to check if $f(x) = y$ or $f(x') = y$, and outputs whichever passes the check (if any). Non-adaptive!
+%       \pause
+%     \item For the full algorithm, instead of repeating twice, we repeat $r = O(N / (\log N / \log \log N))$ times.
+%     % \item Store inverses for these in a lookup table.
+%       \pause
+%       %NOTE: takes a bit more work to get polylog here.
+%     \item $S = O(r \log N) = O(N \log \log N)$, $T = O(r) = O(N \log \log N / \log N)$.
+%     \end{itemize}
+%   \end{frame}
 
-  \begin{frame}
-    \frametitle{The Algorithm}
+%   \begin{frame}
+%     \frametitle{The Algorithm}
+%     \begin{itemize}
+%     \item Generalizing to arbitrary functions is easy: just assign a unique inverse $x_y$ to each $y \in f([N])$ and define $\alpha_y = x_y - g(y)$.
+%       \pause
+%     \item By partitioning the range and letting each $\alpha$ specify multiple candidates, we can get $S = O(N \log (N / T))$.
+%       \pause
+%     \item Is this tradeoff the ``right answer''?
+%       \pause
+%     \item Our algorithm is a \emph{guess-and-check algorithm}---it's non-adaptive, and it returns one of the points $x_1, \dots, x_T$ that it queries.
+%         % ---it always returns a point it evaluates.
+%       \pause
+%     \item That is, it can be thought of returning $T$ candidate inverses $x_1, \dots, x_T$, \emph{without querying $f$ at all}.
+%       % as making \emph{zero} evaluations of $f$ and returning $T$ candidate inverses $x_1, \dots, x_T$.
+%       \pause
+%     \item
+%       % NOTE: if we had this lower bound for GENERAL non-adaptive algorithms, we'd have circuit lower bounds!
+%       We show that all \emph{guess-and-check} algorithms satisfy the matching lower bound $S = \Omega(N \log (N/T))$.
+%     \end{itemize}
+%   \end{frame}
+
+  % \begin{frame}
+  %   \frametitle{Guess-and-check algorithms}
+  %   \begin{itemize}
+  %   \item The very simple algorithm is a \emph{guess-and-check algorithm}---it's non-adaptive, and it returns one of the points $x_1, \dots, x_T$ that it queries.
+  %       % ---it always returns a point it evaluates.
+  %     \pause
+  %   \item That is, it can be thought of returning $T$ candidate inverses $x_1, \dots, x_T$, \emph{without querying $f$ at all}.
+  %     % as making \emph{zero} evaluations of $f$ and returning $T$ candidate inverses $x_1, \dots, x_T$.
+  %     \pause
+  %   \item
+  %     % NOTE: if we had this lower bound for GENERAL non-adaptive algorithms, we'd have circuit lower bounds!
+  %     We show that all \emph{guess-and-check} algorithms satisfy the matching lower bound $S = \Omega(N \log (N/T))$.
+  %   \end{itemize}
+  % \end{frame}
+
+    \begin{frame}
+    \frametitle{A Matching Lower Bound}
     \begin{itemize}
-    \item Generalizing to arbitrary functions is easy: just assign a unique inverse $x_y$ to each $y \in f([N])$ and define $\alpha_y = x_y - g(y)$.
-      \pause
-    \item By partitioning the range and letting each $\alpha$ specify multiple candidates, we can get $S = O(N \log (N / T))$.
-      \pause
-    \item Is this tradeoff the ``right answer''?
-      \pause
-    \item Our algorithm is a \emph{guess-and-check algorithm}---it's non-adaptive, and it returns one of the points $x_1, \dots, x_T$ that it queries.
-        % ---it always returns a point it evaluates.
-      \pause
-    \item That is, it can be thought of returning $T$ candidate inverses $x_1, \dots, x_T$, \emph{without querying $f$ at all}.
-      % as making \emph{zero} evaluations of $f$ and returning $T$ candidate inverses $x_1, \dots, x_T$.
+    \item The very simple algorithm is a \emph{guess-and-check algorithm}. That is, it can be thought of as making \emph{no} queries to $f$, and returning $T$ candidate inverses, one of which is guaranteed to be correct.
       \pause
     \item
       % NOTE: if we had this lower bound for GENERAL non-adaptive algorithms, we'd have circuit lower bounds!
@@ -1211,7 +1253,7 @@
   \end{frame}
 
   \begin{frame}
-    \frametitle{Lower Bound}
+    \frametitle{A Matching Lower Bound}
     \begin{itemize}
     \item For simplicity, assume a guess-and-check algorithm that always succeeds, with parameters $S, T$. We use a compression argument.
       \pause
@@ -1246,17 +1288,18 @@
           \[T \lesssim N^{3/2} / S\]
             algorithm for inverting arbitrary functions.
           \pause
-        \item The first nontrivial non-adaptive function inversion algorithm.
-          \pause
-          \begin{itemize}
-           \item  Best possible among \emph{guess-and-check} algorithms.
-\end{itemize}
+          % \item The first nontrivial non-adaptive function inversion algorithm.
+          \item Shared randomness is essentially free
+  \pause
+          \item We observe there is a very simple nontrivial non-adaptive function inversion algorithm, and show it is best possible among \emph{guess-and-check} algorithms.
+%           \pause
+%           \begin{itemize}
+%            \item  Best possible among \emph{guess-and-check} algorithms.
+% \end{itemize}
         %   \begin{itemize}
         %   \item A \emph{simply non-adaptive} algorithm achieving $S = O(N \log (N/T))$, and this is tight.
         %   \end{itemize}
 \pause
-\item Shared randomness is essentially free
-  \pause
 \item Not in this talk:
           \begin{itemize}
           \item Search-to-decision reductions
@@ -1574,7 +1617,7 @@
 % - Model (need to think about how to motivate randomness...) Here is where can be very clear what resources S and T we care about in the talk, and that we'll be calling them ``time'' and ``space''. S is *space needed for data structure*. That's it.
 % - Fiat-Naor
 
-
+% TODO: leave top left corner of slides open :/
 
 
 
