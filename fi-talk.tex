@@ -338,7 +338,7 @@
 \begin{frame}
   \frametitle{Function Inversion}
   \begin{itemize}
-  \item Given a function\only<2->{, and a point $y$ in its range,}\only<3->{ find $x$ with $f(x) = y$.}
+  \item Given a function\only<2->{, and a point $y$ in its range,}\only<3->{ \newline find $x$ with $f(x) = y$.}
     \vspace{0.2em}
   \end{itemize}
   \begin{tikzpicture}
@@ -395,7 +395,7 @@
   \begin{frame}
     \frametitle{Hellman's algorithm}
     \begin{itemize}
-    \item If $f$ is a permutation, its \emph{graph} is a disjoint union of cycles.
+    \item If $f$ is a permutation, \newline its \emph{graph} is a disjoint union of cycles.
     \end{itemize}
     \vspace{1ex}
     \onslide<+->
@@ -580,10 +580,12 @@
      % \item Notice that Hellman's algorithm only requires the ability to evaluate $f$ (\emph{black-box} access).
      % \item Only requires \emph{black-box} access to $f$.
   % \pause
-\item \textbf{Goal:} design a pair of algorithms $(\P, \A)$ such that for all $f$ and all $y \in f([N])$,
+   \item \textbf{Goal:} design a pair of algorithms $(\P, \A)$ \newline such that
+     % for all $f$ and all $y \in f([N])$,
      % \pause $\forall f: [N] \to [N], \forall y \in f([N])$,
   % \[\Pr_{r_1, r_2 \sim \{0, 1\}^\ell}[\alpha \gets \P(f, r_1); p' \gets \A^f(\alpha, y, r_2); f(p') = y] \geq 9/10.\]
-     \[\Pr[\alpha \gets \P(f); x \gets \A^f(\alpha, y); f(x) = y] \geq \text{constant}.\]
+  % \[\Pr[\alpha \gets \P(f); x \gets \A^f(\alpha, y); f(x) = y] \geq \text{constant}.\]
+     \[\Pr[\alpha \gets \P(f); x \gets \A^f(\alpha, y); f(x) = y] \geq 9/10.\]
      \mypause
    \item In this model, $\P$ and $\A$ have \textbf{unbounded} computational power.
      \pause
@@ -623,7 +625,7 @@
      % Or, a value that hashes to p
      % \item Other scenarios:
    \begin{itemize}
-   \item The NSA wants to break a widely used cryptographic function, such as AES-128
+   \item The NSA wants to break cryptography based on a widely used cryptographic function, such as AES-128.
      \pause
    \item Hackers want to recover passwords from a stolen database of password hashes (Rainbow Tables)
      \pause
@@ -635,9 +637,204 @@
      \end{itemize}
    \end{frame}
 
+   \begin{frame}
+  \frametitle{Beyond Permutations}
+
+ % \vspace{-0.5cm}
+ \pause
+ % \pause
+
+    \scriptsize{
+      \begin{table}
+      \renewcommand{\arraystretch}{1.25}
+      \centering
+      \rowcolors{2}{gray!10}{gray!30}
+      \begin{tabular}{p{2.2cm}lll}
+        % \hline
+        Result & Applies To & Tradeoff & Key Point \\
+        \hline
+        Hellman 1980 \inlineauthor{hellman}
+               & permutations
+               % & $S \cdot T \leq O(N \log N)$
+               & $T \lesssim N/ S$
+               & $S = T \lesssim \sqrt{N}$ \pause \\    %\hline
+        Yao 1990 \inlineauthor{yao}
+               &permutations
+               % & $S \cdot T \geq \Omega(N \log N)$
+               & $T \gtrsim N / S$
+               & $S = T \gtrsim \sqrt{N}$ \pause \\
+        Hellman 1980 \inlineauthor{hellman}
+               & random $f$
+               % & $S^2 \cdot T \leq \tilde{O}(N^2)$
+               & $T \lesssim N^2/S^2$
+               & $S = T \lesssim N^{2/3}$ \pause \\
+        Fiat-Naor 1991 \inlineauthor{fiat} \inlineauthor{naor}
+               & all functions
+               % &$S^3 \cdot T \leq \tilde{O}(N^3)$
+               & $T \lesssim N^3/S^3$
+               & $S = T \lesssim N^{3/4}$ \pause \\
+        % \only<2->{Hellman 1980 & random $f$ & $S^2 \cdot T \leq \tilde{O}(N^2)$ & $S = T \lesssim N^{2/3}$ \\}
+        % \only<3->{Yao 1990 &permutations & \textcolor{red}{$S \cdot T \geq \Omega(N \log N)$} & \textcolor{red}{$S = T \gtrsim \sqrt{N}$} \\}
+        % \only<4->{Fiat-Naor 1991 & all functions  &$S^3 \cdot T \leq \tilde{O}(N^3)$ & $S = T \simeq N^{3/4}$ \\}
+        % \hline
+      \end{tabular}
+    \end{table}
+  }
+
+  \normalsize{
+  \begin{itemize}
+    % \item Central open problem is the gap between Yao's lower bound and the algorithms due to Hellman and Fiat and Naor.
+  \item Q: Can we improve Fiat-Naor? Can we improve Yao's lower bound?
+    \pause
+  \item A: Sort of and sort of!
+    % In this talk:
+  % \begin{itemize}
+  %   \item Result 1: A simple improvement to Fiat and Naor's algorithm when $T > S$.
+  %   \item Result 2: A tight lower bound for a natural class of function inversion algorithms.
+  %   \end{itemize}
+  \end{itemize}
+  }
+
+
+ % \scalebox{0.85}{\begin{minipage}{1.2\textwidth}
+%  \begin{itemize}
+%     % \item Central open problem is the gap between Yao's lower bound and the algorithms due to Hellman and Fiat and Naor.
+%   \item Q: Can we improve Fiat-Naor? Can we improve Yao's lower bound?
+%     \pause
+%   \item A: Sort of and sort of! In this talk:
+%      \scalebox{0.85}{\begin{minipage}{1.2\textwidth}
+%   \begin{itemize}
+%     \item Result 1: A simple improvement to Fiat and Naor's algorithm when $T > S$.
+%     \item Result 2: A tight lower bound for a natural class of function inversion algorithms.
+%     \end{itemize}
+%       \end{minipage}
+% }
+%   \end{itemize}
+
+  \end{frame}
+
+  \begin{frame}
+    \frametitle{Our Results}
+     \begin{itemize}
+     \item Result 1: A simple improvement \newline
+       to Fiat and Naor's algorithm in the regime $T > S$.
+    \item Result 2: A tight lower bound for a natural class of non-adaptive function inversion algorithms.
+    \item Not in this talk: equivalences between variants of function inversion.
+        %   \begin{itemize}
+        %   \item Search-to-decision reductions
+        %     \pause
+        %   % for inverting arbitrary functions and inverting random functions
+        %   % \item The size of the codomain doesn't matter (us and \cite{CorriganGibbs19}) \inlineauthor{cg} \inlineauthor{kogan}
+        %   \item
+        %     A larger codomain does not make the problem harder (us and \cite{CorriganGibbs19}) \inlineauthor{cg} \inlineauthor{kogan}
+        % % \item Reduction from inverting random $f: [N] \to [M]$ to inverting random $f: [N] \to [M]$ (arbitrary to arbitrary already shown by \cite{CorriganGibbs19}).
+        %   \end{itemize}
+    \end{itemize}
+  \end{frame}
+
+   \begin{frame}
+    \frametitle{Result 1: Improving Fiat-Naor}
+    \scriptsize{
+    \begin{table}
+      \renewcommand{\arraystretch}{1.25}
+      \centering
+      \rowcolors{2}{gray!30}{gray!10}
+      \begin{tabular}{p{2cm}lll}
+        Result  & Applies To & Tradeoff & Key Point \\
+        \hline
+        Hellman 1980 \inlineauthor{hellman} & permutations  & $T \lesssim N / S$ & $S = T \lesssim \sqrt{N}$ \\    %\hline
+        Yao 1990 \inlineauthor{yao} &permutations & $T \gtrsim N/S$ & $S = T \gtrsim \sqrt{N}$ \\
+        Hellman 1980 \inlineauthor{hellman} & random $f$ & $T \lesssim N^2/S^2$ & $S = T \lesssim N^{2/3}$ \\
+        Fiat-Naor 1991 \inlineauthor{fiat} \inlineauthor{naor} & all functions  &$T \lesssim N^3/S^3$ & $S = T \lesssim N^{3/4}$ \pause  \\
+        \rowcolor{green!30}
+        This work & all functions &$T \lesssim N^3 / (S^2 T)$ & $S = T \lesssim N^{3/4}$
+                                                                            \pause
+        \\
+        \rowcolor{green!30}
+        &&    $T \lesssim N^{3/2}/S$ & \\
+      \end{tabular}
+    \end{table}
+  }
+  % For comparison, it's helpful to rewrite our tradeoff as $T \lesssim N^3 / (S^2 T)$.
+\end{frame}
+
+\begin{frame}
+  \frametitle{Result 1: Improving Fiat-Naor}
+    \begin{tikzpicture}
+\begin{axis}[
+    axis lines = left,
+    xlabel = {\(\log(S)\textcolor{gray}{/\log(N)}\)},
+    ylabel = {\(\log(T)\textcolor{gray}{/\log(N)}\)},
+    legend pos=south east, % position the legend in the north-west corner
+    legend style={draw=none, font=\scriptsize, anchor = west, at={(1.05, 0.7)}}, % remove the border around the legend
+    % axis equal,
+    % width=5cm,
+    % height=9cm
+    ymin = 0,
+    ymax = 1,
+    xmin = 0,
+    xmax = 1,
+    ]
+\addplot[name path = fn, color=blue, domain = 0:1, thick]{3 - 3*x};
+\addlegendentry{Arbitrary (Fiat-Naor)}
+
+    \path[name path = axis, ] (axis cs:1, 1) -- (axis cs:0, 1);
+
+\only<2->{
+\addplot[name path = ours, color=green, domain = 0:1, thick]{3/2 - x};
+\addlegendentry{Arbitrary (Our improvement)}
+                \addplot [
+        thick,
+        color=green,
+        fill=green,
+        fill opacity=0.05,
+        forget plot,
+    ]
+    fill between[
+        of=ours and axis,
+        ];
+
+        \addplot[color = brown, only marks, forget plot] coordinates {(0.75,0.75)};
+    \node[anchor=west] at (axis cs:0.77,0.8) {$\textcolor{brown}{S = T}$};
+        }
+
+
+        \addplot [
+        thick,
+        color=green,
+        fill=green,
+        fill opacity=0.05,
+        forget plot,
+    ]
+    fill between[
+        of=fn and axis,
+        ];
+
+
+
+
+
+
+
+\addplot[color=red!70, domain = 0:1, thick, dotted]{1 - 0.02 - x};
+\addlegendentry{Lower bound (Yao)}
+\addplot[color=gray, domain = 0:1, thick]{1 - x};
+\addlegendentry{Permutations (Hellman)}
+\addplot[color=gray, domain = 0:1, thick, dashdotted]{2 - 2*x};
+\addlegendentry{Random (Hellman)}
+\addplot[color=olive, domain = 0:1, thick, dashed]{1};
+\addlegendentry{Trivial}
+\addplot[color=olive, thick, dashed, const plot] coordinates {(1, 0) (1, 1)};
+
+% \addplot[color=black, domain = 0:1, thick, dashed]{x};
+% \addlegendentry{$S = T$}
+\end{axis}
+\end{tikzpicture}
+\end{frame}
+
    \begin{frame}[fragile]
 %     % \frametitle{Beyond permutations: the gap}
-     \frametitle{Beyond permutations}
+     \frametitle{Background: beyond permutations}
      % NOTE: This table and the open question should set the tone of the rest of the talk. We "sorta" answer both the upper and lower bound question.
      % TODO put these chains and the sketch of how the generalizations work after the prior work table.
 %     % \scalebox{0.9}{
@@ -719,7 +916,7 @@
   \end{frame}
 
   \begin{frame}
-    \frametitle{Beyond permutations}
+    \frametitle{Background: Fiat-Naor}
  \begin{itemize}
  \item Hellman's argument fails for arbitrary functions.
  \end{itemize}
@@ -759,64 +956,17 @@
    \pause
    \pause
    \pause
-   \item Paths collide at these points, causing all sorts of problems.
+ \item Paths collide at these points, causing all sorts of problems.
+   \pause
     \item Fiat and Naor deal with this by storing $\alpha = (\alpha', L)$, where $L$ contains junction points along with their inverses. % NOTE: say "the list L"
       \pause
     \item Intuitively, $\alpha'$ is the data structure for a \emph{restriction} of $f$ that avoids the junction points in $L$.
+      \pause
     \item More precisely, the ``rerandomization'' functions are sampled using rejection sampling so that their range is $[N] - L$.
   \end{itemize}
   \end{frame}
 
-\begin{frame}
-  \frametitle{The Story So Far}
 
- \vspace{-0.5cm}
- % \pause
- % \pause
-
-    \small{
-      \begin{table}
-      \renewcommand{\arraystretch}{1.25}
-      \centering
-      \rowcolors{2}{gray!10}{gray!30}
-      \begin{tabular}{p{2.2cm}lll}
-        % \hline
-        Result & Applies To & Tradeoff & Key Point \\
-        \hline
-        Hellman 1980 \inlineauthor{hellman}
-               & permutations
-               % & $S \cdot T \leq O(N \log N)$
-               & $T \lesssim N/ S$
-               & $S = T \lesssim \sqrt{N}$ \pause \\    %\hline
-        Yao 1990 \inlineauthor{yao}
-               &permutations
-               % & $S \cdot T \geq \Omega(N \log N)$
-               & $T \gtrsim N / S$
-               & $S = T \gtrsim \sqrt{N}$ \pause \\
-        Hellman 1980 \inlineauthor{hellman}
-               & random $f$
-               % & $S^2 \cdot T \leq \tilde{O}(N^2)$
-               & $T \lesssim N^2/S^2$
-               & $S = T \lesssim N^{2/3}$ \pause \\
-        Fiat-Naor 1991 \inlineauthor{fiat} \inlineauthor{naor}
-               & all functions
-               % &$S^3 \cdot T \leq \tilde{O}(N^3)$
-               & $T \lesssim N^3/S^3$
-               & $S = T \lesssim N^{3/4}$ \pause \\
-        % \only<2->{Hellman 1980 & random $f$ & $S^2 \cdot T \leq \tilde{O}(N^2)$ & $S = T \lesssim N^{2/3}$ \\}
-        % \only<3->{Yao 1990 &permutations & \textcolor{red}{$S \cdot T \geq \Omega(N \log N)$} & \textcolor{red}{$S = T \gtrsim \sqrt{N}$} \\}
-        % \only<4->{Fiat-Naor 1991 & all functions  &$S^3 \cdot T \leq \tilde{O}(N^3)$ & $S = T \simeq N^{3/4}$ \\}
-        % \hline
-      \end{tabular}
-    \end{table}
-  }
-    \begin{itemize}
-    % \item Central open problem is the gap between Yao's lower bound and the algorithms due to Hellman and Fiat and Naor.
-  \item Q: Can we improve Fiat-Naor? Can we improve Yao's lower bound?
-    \pause
-  \item A: Sort of and sort of!
-  \end{itemize}
-\end{frame}
 
 % \begin{frame}
 %   \frametitle{The Story So Far}
@@ -858,105 +1008,7 @@
 %   \end{itemize}
 % \end{frame}
 
-    \begin{frame}
-    \frametitle{Part 1: A Simple Improvement to Fiat-Naor}
-    \scriptsize{
-    \begin{table}
-      \renewcommand{\arraystretch}{1.25}
-      \centering
-      \rowcolors{2}{gray!30}{gray!10}
-      \begin{tabular}{p{2cm}lll}
-        Result  & Applies To & Tradeoff & Key Point \\
-        \hline
-        Hellman 1980 \inlineauthor{hellman} & permutations  & $T \lesssim N / S$ & $S = T \lesssim \sqrt{N}$ \\    %\hline
-        Yao 1990 \inlineauthor{yao} &permutations & $T \gtrsim N/S$ & $S = T \gtrsim \sqrt{N}$ \\
-        Hellman 1980 \inlineauthor{hellman} & random $f$ & $T \lesssim N^2/S^2$ & $S = T \lesssim N^{2/3}$ \\
-        Fiat-Naor 1991 \inlineauthor{fiat} \inlineauthor{naor} & all functions  &$T \lesssim N^3/S^3$ & $S = T \lesssim N^{3/4}$ \pause  \\
-        \rowcolor{green!30}
-        This work & all functions &$T \lesssim N^3 / (S^2 T)$ & $S = T \lesssim N^{3/4}$
-                                                                            \pause
-        \\
-        \rowcolor{green!30}
-        &&    $T \lesssim N^{3/2}/S$ & \\
-      \end{tabular}
-    \end{table}
-  }
-  % For comparison, it's helpful to rewrite our tradeoff as $T \lesssim N^3 / (S^2 T)$.
-\end{frame}
 
-\begin{frame}
-  \frametitle{A Simple Improvement to Fiat-Naor}
-    \begin{tikzpicture}
-\begin{axis}[
-    axis lines = left,
-    xlabel = {\(\log(S)\textcolor{gray}{/\log(N)}\)},
-    ylabel = {\(\log(T)\textcolor{gray}{/\log(N)}\)},
-    legend pos=north east, % position the legend in the north-west corner
-    legend style={draw=none, font=\scriptsize, anchor = west, at={(1.05, 0.7)}}, % remove the border around the legend
-    % axis equal,
-    % width=5cm,
-    % height=9cm
-    ymin = 0,
-    ymax = 1,
-    xmin = 0,
-    xmax = 1,
-    ]
-\addplot[name path = fn, color=blue, domain = 0:1, thick]{3 - 3*x};
-\addlegendentry{Arbitrary (Fiat-Naor)}
-
-    \path[name path = axis, ] (axis cs:1, 1) -- (axis cs:0, 1);
-
-\only<2->{
-\addplot[name path = ours, color=green, domain = 0:1, thick]{3/2 - x};
-\addlegendentry{Arbitrary (Our improvement)}
-                \addplot [
-        thick,
-        color=green,
-        fill=green,
-        fill opacity=0.05,
-        forget plot,
-    ]
-    fill between[
-        of=ours and axis,
-        ];
-
-        \addplot[color = brown, only marks, forget plot] coordinates {(0.75,0.75)};
-    \node[anchor=west] at (axis cs:0.77,0.8) {$\textcolor{brown}{S = T}$};
-        }
-
-
-        \addplot [
-        thick,
-        color=green,
-        fill=green,
-        fill opacity=0.05,
-        forget plot,
-    ]
-    fill between[
-        of=fn and axis,
-        ];
-
-
-
-
-
-
-
-\addplot[color=red!70, domain = 0:1, thick, dotted]{1 - 0.02 - x};
-\addlegendentry{Lower bound (Yao)}
-\addplot[color=gray, domain = 0:1, thick]{1 - x};
-\addlegendentry{Permutations (Hellman)}
-\addplot[color=gray, domain = 0:1, thick, dashdotted]{2 - 2*x};
-\addlegendentry{Random (Hellman)}
-\addplot[color=olive, domain = 0:1, thick, dashed]{1};
-\addlegendentry{Trivial}
-\addplot[color=olive, thick, dashed, const plot] coordinates {(1, 0) (1, 1)};
-
-% \addplot[color=black, domain = 0:1, thick, dashed]{x};
-% \addlegendentry{$S = T$}
-\end{axis}
-\end{tikzpicture}
-\end{frame}
 
   % \begin{frame}
   %   \frametitle{Result \#1: Improved Fiat and Naor}
@@ -974,7 +1026,7 @@
   % \end{frame}
 
     \begin{frame}
-    \frametitle{A Simple Improvement to Fiat-Naor}
+    \frametitle{Our Improvement (1)}
     \begin{itemize}
     % \item Recall that for $f$ arbitrary, Hellman's algorithm is tripped up by points with many inverses (``junction points'').
     %   % Recall that Fiat and Naor want to apply Hellman's ``disjoint paths'' idea, but run into trouble due to points with many inverses. Let's call these ``junction points''.
@@ -994,7 +1046,7 @@
        \item Fiat and Naor get $|L|\simeq S$, but this is the hard limit, since $L$ needs to fit into $S$-bit advice $\alpha$.
          % so it can hold no more than $S$ points.
          % \item So we'd love for $L$ to be longer, but it needs to fit in $\alpha \in \{0, 1\}^S$.
-         %   \pause
+           \pause
          \item Or does it?
         % by writing down a list $L$ of junction points.
       % \item Intuitively, Fiat and Naor's algorithm implicitl \emph{restriction} of $f$ that avoids the junction points.
@@ -1008,12 +1060,13 @@
 
 
   \begin{frame}
-    \frametitle{A Simple Improvement to Fiat-Naor}
+    \frametitle{Our Improvement (2)}
     \begin{itemize}
-    \item  Fiat and Naor's list $L$ actually consists of images $f(x_i)$ of random points $x_i \sim [N]$.
+    \item  Fiat and Naor's list $L$ actually consists of \newline
+      images $f(x_i)$ of random points $x_i \sim [N]$.
       \pause
     \item Our idea: Instead of reading $L$ from $\alpha$,
-      $\A$ recovers $L$ by evaluating $f$ on the same random  points $x_i$.
+      $\A$ recovers $L$ by evaluating $f$ on the same random points $x_i$.
       \pause
     % \item This allows $|L| \simeq T$, so we can get
     %   \[S^2 T \max\{S, T\} \simeq N^3.\]
@@ -1023,6 +1076,7 @@
       \]
       \mypause
       % NOTE: can ask audience to find the issue here
+    \item That's it!
     \item But I've cheated here...
       \pause
     \item How do $\A$ and $\P$ agree on the \emph{same} list of random values $x_i$?
@@ -1030,22 +1084,23 @@
   \end{frame}
 
   \begin{frame}
-    \frametitle{Sharing Randomness}
+    \frametitle{Along the Way: Shared Randomness}
     \begin{itemize}
-    \item We show that we can assume \emph{shared randomness}  without loss of generality.
+    \item We show that, in the preprocessing model, \newline one can assume \emph{shared randomness}  without loss of generality.
       % Here, that means shared random $x_i$.
       \pause
     % \item Applies to all space-time tradeoffs in the ``non-uniform model'' (i.e., optimizing $S$ and $T$).
     %   \pause
-    \item More precisely, shared randomness costs an additive $O(\log N)$ in $S$.
+    % \item More precisely, shared randomness costs an additive $O(\log N)$ in $S$.
       % and a factor 2 increase in failure probability.
-      \pause
+    %   \pause
     \item The proof adapts \emph{Newman's lemma} \cite{Newman91} \inlineauthor{newman} from communication complexity.
       \pause
-    \item The idea: rather than storing the random bits in full, store a random \emph{index} into a fixed list of strings.
-      \pause
-    \item If the number $\Sigma = O(N)$ of fixed strings is large enough, this will be almost as good as fully random.
-      \pause
+    %   \pause
+    % \item The idea: rather than storing the random bits in full, store a random \emph{index} into a fixed list of strings.
+    %   \pause
+    % \item If the number $\Sigma = O(N)$ of fixed strings is large enough, this will be almost as good as fully random.
+    %   \pause
       % \item This approach leans fairly heavily on non-uniformity. But in practice, can just instantiate a random oracle.
     \item In practice, can instantiate a random oracle.
     \end{itemize}
@@ -1074,7 +1129,7 @@
 
                     % & $S^2 \cdot T \cdot \max\{S, T\} \leq \tilde{O}(N^3)$
   \begin{frame}
-    \frametitle{Part 2: A Lower Bound}
+    \frametitle{Result 2:  Background}
     \begin{itemize}
     \item Recall that Yao's lower bound (for inverting \emph{arbitrary} functions) hasn't been improved in 30$+$ years.
       \pause
@@ -1110,11 +1165,11 @@
   \end{frame}
 
   \begin{frame}
-    \frametitle{A Simple Non-Adaptive Algorithm}
+    \frametitle{A Lower Bound}
     \begin{itemize}
-    \item Corrigan-Gibbs and Kogan speculated that there is no non-adaptive algorithm with
-      \[S = o(N \log N) \text{ and } T = o(N).\]
-      \nocite{CorriganGibbs19}
+    % \item Corrigan-Gibbs and Kogan speculated that there is no non-adaptive algorithm with
+    %   \[S = o(N \log N) \text{ and } T = o(N).\]
+      % \nocite{CorriganGibbs19}
     \item We observe that there IS in fact a very simple algorithm, that (barely!) outperforms the trivial inverter.
       % there IS such an algorithm, that (barely!) outperforms the trivial inverter.
       % it IS possible to do (slightly!) better than the trivial inverter.
@@ -1124,7 +1179,11 @@
     %   \[S = O_c(N \log \log N), T = O(N / \log^c N)\]
     %   for any constant $c$.
     % \item Storing all but $\log T$ bits of an inverse for each range element allows to recover the inverse in time $T$, and achieves $S = O(N \log (N / T))$.
-      \item For each range element, just store all but $\log(T)$ bits of one of its inverses (implicitly defining $T$ candidate inverses). This achieves $S = O(N \log (N / T))$.
+    \item For each range element, preprocessing stores a $(\log(N) - \log(T))$-bit prefix of one of its inverses.
+      \pause
+    \item This implicitly defines $T$ candidate inverses for the online algorithm to check, achieving the tradeoff $S = O(N \log (N / T))$.
+      % just store all but $\log(T)$ bits of one of its inverses (implicitly defining $T$ candidate inverses). This achieves $S = O(N \log (N / T))$.
+    % \item It achieves the  $S = O(N \log (N / T))$.
     % \item It achieves $S = O(N \log (N / T))$.
     %   \pause
     % \item For example,
@@ -1133,6 +1192,14 @@
       % the first $\log N - \log T$ bits of an inverse for each of $N$ elements allows the inverse to be found in time $T$
           \mypause
           % \item Thus non-adaptive algorithms are not the barren, lifeless desert previously expected...
+              % \item The very simple algorithm is a \emph{guess-and-check algorithm}. That is, it can be thought of as making \emph{no} queries to $f$, and returning $T$ candidate inverses, one of which is guaranteed to be correct.
+              %   \pause
+        \item When the online algorithm just (non-adaptively)  checks $T$ candidate inverses determined by the preprocessing $\alpha$ and the challenge $y$, we call it a \emph{guess-and-check} algorithm.
+          \pause
+    \item
+      We show that \textbf{the simple algorithm above is asymptotically optimal among guess-and-check algorithms}.
+      % NOTE: if we had this lower bound for GENERAL non-adaptive algorithms, we'd have circuit lower bounds!
+      % We show that \textbf{all \emph{guess-and-check} algorithms satisfy the matching lower bound $S = \Omega(N \log (N/T))$}.
     \end{itemize}
   \end{frame}
 
@@ -1241,21 +1308,23 @@
   %   \end{itemize}
   % \end{frame}
 
-    \begin{frame}
-    \frametitle{A Matching Lower Bound}
-    \begin{itemize}
-    \item The very simple algorithm is a \emph{guess-and-check algorithm}. That is, it can be thought of as making \emph{no} queries to $f$, and returning $T$ candidate inverses, one of which is guaranteed to be correct.
-      \pause
-    \item
-      % NOTE: if we had this lower bound for GENERAL non-adaptive algorithms, we'd have circuit lower bounds!
-      We show that all \emph{guess-and-check} algorithms satisfy the matching lower bound $S = \Omega(N \log (N/T))$.
-    \end{itemize}
-  \end{frame}
+  %   \begin{frame}
+  %   \frametitle{A Matching Lower Bound}
+  %   \begin{itemize}
+  %   \item The very simple algorithm is a \emph{guess-and-check algorithm}. That is, it can be thought of as making \emph{no} queries to $f$, and returning $T$ candidate inverses, one of which is guaranteed to be correct.
+  %     \pause
+  %   \item
+  %     % NOTE: if we had this lower bound for GENERAL non-adaptive algorithms, we'd have circuit lower bounds!
+  %     We show that all \emph{guess-and-check} algorithms satisfy the matching lower bound $S = \Omega(N \log (N/T))$.
+  %   \end{itemize}
+  % \end{frame}
 
   \begin{frame}
-    \frametitle{A Matching Lower Bound}
+    \frametitle{A Lower Bound}
     \begin{itemize}
-    \item For simplicity, assume a guess-and-check algorithm that always succeeds, with parameters $S, T$. We use a compression argument.
+    \item The proof is a compression argument. For simplicity, \newline
+      assume there exists a guess-and-check algorithm \newline
+      that always succeeds, with parameters $S, T$. Then
       \pause
     \item Theorem: Can encode any permutation $f$ using $S + N \log T$ bits.
       \pause
@@ -1280,37 +1349,37 @@
       \end{frame}
 
 
-      \begin{frame}
-        \frametitle{Function Inversion Revisited: Our Results}
-        \begin{itemize}
-        \item Improving Fiat-Naor: a
-          % \[S^2 T \max\{S, T\} = \tilde{O}(N^3)\]
-          \[T \lesssim N^{3/2} / S\]
-            algorithm for inverting arbitrary functions.
-          \pause
-          % \item The first nontrivial non-adaptive function inversion algorithm.
-          \item Shared randomness is essentially free
-  \pause
-          \item We observe there is a very simple nontrivial non-adaptive function inversion algorithm, and show it is best possible among \emph{guess-and-check} algorithms.
+%       \begin{frame}
+%         \frametitle{Function Inversion Revisited: Our Results}
+%         \begin{itemize}
+%         \item Improving Fiat-Naor: a
+%           % \[S^2 T \max\{S, T\} = \tilde{O}(N^3)\]
+%           \[T \lesssim N^{3/2} / S\]
+%             algorithm for inverting arbitrary functions.
 %           \pause
+%           % \item The first nontrivial non-adaptive function inversion algorithm.
+%           \item Shared randomness is essentially free
+%   \pause
+%           \item We observe there is a very simple nontrivial non-adaptive function inversion algorithm, and show it is best possible among \emph{guess-and-check} algorithms.
+% %           \pause
+% %           \begin{itemize}
+% %            \item  Best possible among \emph{guess-and-check} algorithms.
+% % \end{itemize}
+%         %   \begin{itemize}
+%         %   \item A \emph{simply non-adaptive} algorithm achieving $S = O(N \log (N/T))$, and this is tight.
+%         %   \end{itemize}
+% \pause
+% \item Not in this talk:
 %           \begin{itemize}
-%            \item  Best possible among \emph{guess-and-check} algorithms.
-% \end{itemize}
-        %   \begin{itemize}
-        %   \item A \emph{simply non-adaptive} algorithm achieving $S = O(N \log (N/T))$, and this is tight.
-        %   \end{itemize}
-\pause
-\item Not in this talk:
-          \begin{itemize}
-          \item Search-to-decision reductions
-            \pause
-          % for inverting arbitrary functions and inverting random functions
-          % \item The size of the codomain doesn't matter (us and \cite{CorriganGibbs19}) \inlineauthor{cg} \inlineauthor{kogan}
-          \item A larger codomain does not make the problem harder (us and \cite{CorriganGibbs19}) \inlineauthor{cg} \inlineauthor{kogan}
-        % \item Reduction from inverting random $f: [N] \to [M]$ to inverting random $f: [N] \to [M]$ (arbitrary to arbitrary already shown by \cite{CorriganGibbs19}).
-          \end{itemize}
-        \end{itemize}
-      \end{frame}
+%           \item Search-to-decision reductions
+%             \pause
+%           % for inverting arbitrary functions and inverting random functions
+%           % \item The size of the codomain doesn't matter (us and \cite{CorriganGibbs19}) \inlineauthor{cg} \inlineauthor{kogan}
+%           \item A larger codomain does not make the problem harder (us and \cite{CorriganGibbs19}) \inlineauthor{cg} \inlineauthor{kogan}
+%         % \item Reduction from inverting random $f: [N] \to [M]$ to inverting random $f: [N] \to [M]$ (arbitrary to arbitrary already shown by \cite{CorriganGibbs19}).
+%           \end{itemize}
+%         \end{itemize}
+%       \end{frame}
 
 
 
@@ -1348,7 +1417,7 @@
       \begin{frame}
         \frametitle{Open Problems}
         \begin{itemize}
-        \item Only one real open problem--\pause\textbf{close the gap!}
+        \item In some sense, only one open problem--\pause\textbf{close the gap!}
           \pause
         \item Moonshots:
         \begin{itemize}
@@ -1361,7 +1430,7 @@
 \begin{itemize}
         \item Better algorithms for inverting a small fraction of the range? That is, improving on De, Trevisan and Tulsiani \cite{DTT10}?
           \pause
-        \item Better algorithms for injective functions?
+        \item Better algorithms for inverting injective functions?
 \end{itemize}
         \end{itemize}
       \end{frame}
@@ -1471,7 +1540,7 @@
   \begin{frame}
     \frametitle{Thank you!}
     % In the infamous words of... catch me outside, how bout dat?
-    I'm happy to take additional questions offline. You can ping me at \texttt{speters@cs.cornell.edu}.
+    I'm happy to take additional questions offline. \newline You can ping me at \texttt{speters@cs.cornell.edu}.
   \end{frame}
 
   \begin{frame}[allowframebreaks]
